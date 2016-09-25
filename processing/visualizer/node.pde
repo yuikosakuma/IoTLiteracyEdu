@@ -72,13 +72,23 @@ void nodes_display() {
   //===> data fetch from database 
   float nodesNumber = nodes.size();
   int i = 0;
+  int squareNumber = ceil(sqrt(nodesNumber));
+  switch(sortType) {
+  case 1: //Temperature
+    //destructive sort
+    Collections.sort(nodes, new NodeComparatorByTemperature()); 
+    break;
+  case 2: //VotedCounter
+    //destructive sort
+    Collections.sort(nodes, new NodeComparatorByVotedcounter());   
+    break;
+  default: //nodeid
+    //destructive sort
+    Collections.sort(nodes, new NodeComparatorByNodeid()); 
+    break;
+  }
+
   switch(positionType) {
-  case 0: //list
-    for (Node tempNode : nodes) {
-      tempNode.updateDrawParameter(0, 0);
-      i++;
-    }
-    break; 
   case 1: //linear
     for (Node tempNode : nodes) {
       tempNode.updateDrawParameter(
@@ -88,7 +98,6 @@ void nodes_display() {
     }
     break;
   case 2: //Square Grid
-    int squareNumber = ceil(sqrt(nodesNumber));
     for (Node tempNode : nodes) {
       tempNode.updateDrawParameter(
       (i % squareNumber + 0.5) / squareNumber *  width, 
@@ -107,23 +116,9 @@ void nodes_display() {
       i++;
     }
     break;
-  case 4: //Square Grid order by Temperature
-    int squareNumber = ceil(sqrt(nodesNumber));
+  default: //list
     for (Node tempNode : nodes) {
-      tempNode.updateDrawParameter(
-      (i % squareNumber + 0.5) / squareNumber *  width, 
-      (i / squareNumber + 0.5) / squareNumber * height);
-      //      println(i + " " + i / squareNumber);
-      i++;
-    }
-    break;
-  case 5: //Square Grid order by Votedcounter
-    int squareNumber = ceil(sqrt(nodesNumber));
-    for (Node tempNode : nodes) {
-      tempNode.updateDrawParameter(
-      (i % squareNumber + 0.5) / squareNumber *  width, 
-      (i / squareNumber + 0.5) / squareNumber * height);
-      //      println(i + " " + i / squareNumber);
+      tempNode.updateDrawParameter(0, 0);
       i++;
     }
     break;

@@ -14,7 +14,7 @@ void draw() {
 
   displayAllDataFromDB("flagtest", "", 10, 60);
   displayAllDataFromDB("connectiontest", "", 410, 60);
-  
+
   nodes_display();
 
   //loop time and framerate drawing <===
@@ -46,8 +46,12 @@ void keyPressed() {
     break;
   case 'p' :
     positionType++;
-    if (positionType > 6) positionType = 0;
+    if (positionType > 4) positionType = 0;
     break;  
+  case 's' :
+    sortType++;
+    if (sortType > 2) sortType = 0;
+    break;    
   default: 
     break;
   }
