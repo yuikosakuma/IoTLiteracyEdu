@@ -8,7 +8,7 @@ void setup() {
 void draw() {
   background(0);
 
-  calculateVoteOnDB();
+  calculateVoteOnDB("connectiontest");
 
   displayAllDataFromDB("flagtest", "", 10, 60);
   displayAllDataFromDB("connectiontest", "", 410, 60);
