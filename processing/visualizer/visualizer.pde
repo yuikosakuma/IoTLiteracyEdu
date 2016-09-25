@@ -1,15 +1,14 @@
+int pastTime = millis(); 
 
-void setup()
-{
+void setup() {
   size(1200, 600);
-
   init_db();
 }
 
-int pastTime = millis(); 
-
 void draw() {
   background(0);
+
+  calculateVoteOnDB();
 
   displayAllDataFromDB("flagtest", "", 10, 60);
   displayAllDataFromDB("connectiontest", "", 410, 60);

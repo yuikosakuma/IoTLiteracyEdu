@@ -29,6 +29,9 @@ void init_db() {
   //===> SQL initialization
 }
 
+void calculateVoteOnDB() {
+}
+
 void displayAllDataFromDB(String tableName, String drawTextStr, int display_x, int display_y) {
   //data fetch from database <===
   connection = pgsql.connect();
