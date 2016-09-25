@@ -96,12 +96,26 @@ void displayAllDataFromDB(String tableName, String drawTextStr, int display_x, i
       drawTextStr += "\n";
 
       while ( pgsql.next () ) {
-        String tempRaw [] = new String [columnNumber]; //
+        String tempRaw [] = new String [columnNumber]; 
         for (int i = 1; i < columnNames.length + 1; i++) {
           tempRaw[i-1] = pgsql.getString(i);
           drawTextStr += pgsql.getString(i) + " ";
         }
         drawTextStr += "\n";
+
+        if (tableName == "connectiontest") { //update data
+          //check we have the Node or not <===
+          boolean foundFlag = false; //ooo if i was in python ... however... I can do it with flag. ugly...
+          for (Node tempNode : nodes) { //oooohhhh ugly.
+            if (int(tempRaw[0]) == tempNode.nodeid) {//compare 64 bit source addres LOW and found update data
+              tempNode.updateDataFromDB(int(tempRaw[0]), int(tempRaw[1]), float(tempRaw[2]), int(tempRaw[3]), int(tempRaw[4]), tempRaw[5]);
+              break;
+            }
+          }
+          if (!foundFlag) {//not found insert new data
+            nodes.add(new Node(int(tempRaw[0]), int(tempRaw[1]), float(tempRaw[2]), int(tempRaw[3]), int(tempRaw[4]), tempRaw[5]));
+          }          //check we have the Node or not ===>
+        }
       }
       textAlign(LEFT);
       textSize(12);

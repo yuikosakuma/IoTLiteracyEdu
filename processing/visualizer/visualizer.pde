@@ -1,17 +1,21 @@
 int pastTime = millis(); 
 
 void setup() {
-  size(1200, 600);
+  size(1200, 1200);
   init_db();
 }
 
 void draw() {
   background(0);
 
+  nodes_init();  
+
   calculateVoteOnDB("connectiontest");
 
   displayAllDataFromDB("flagtest", "", 10, 60);
   displayAllDataFromDB("connectiontest", "", 410, 60);
+  
+  nodes_display();
 
   //loop time and framerate drawing <===
   textAlign(LEFT);
@@ -40,6 +44,10 @@ void keyPressed() {
       println("connect failer"); // yay, connection failed !
     }
     break;
+  case 'p' :
+    positionType++;
+    if (positionType > 6) positionType = 0;
+    break;  
   default: 
     break;
   }
