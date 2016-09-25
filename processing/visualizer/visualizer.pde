@@ -3,7 +3,7 @@ void setup()
 {
   size(1200, 600);
 
-init_db();
+  init_db();
 }
 
 int pastTime = millis(); 

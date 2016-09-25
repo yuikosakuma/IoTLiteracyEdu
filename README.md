@@ -15,5 +15,11 @@ Programs are based on XMASS projects by TadaMatz.
 ##Preparation
 PostgreSQL must be installed. (Installation guide in Japanese: [http://www.dbonline.jp/postgresinstall/](http://www.dbonline.jp/postgresinstall/))  
 PostgreSQL Server should be configurated  
+Following 2 tables must be configurated.  
 
-Processing 2.2.1 is recommended from the point of SQL handling library
+* motedata
+	- 
+* flag
+	- flagid, broadcastflag, value
+
+SQL handling library for Processing needs Processing-2.2.1.  
