@@ -85,15 +85,15 @@ if __name__ == "__main__":
   print "database initialization end"
   #===>database
   
-  # #<=== Serial port initialization
-  # print "serial port initialization start"
+  #<=== Serial port initialization
+  print "serial port initialization start"
   # port = '/dev/ttyUSB0' #XBee Explorer via USB that is for raspberry pi
-  # # port = 'COM81' #XBee Explorer
-  # serialPort = serial.Serial(port, 115200, timeout = 1)
-  # print port + " is opend"
-  # time.sleep(2) #wait for establishing stable serial connection
-  # print "serial port initialization end"
-  # #===> Serial port initialization
+  port = 'COM7' #XBee Explorer
+  serialPort = serial.Serial(port, 9600, timeout = 1)
+  print port + " is opend"
+  time.sleep(2) #wait for establishing stable serial connection
+  print "serial port initialization end"
+  #===> Serial port initialization
 
   #<=== initial data printing
   cur = conn.cursor()
@@ -113,64 +113,64 @@ if __name__ == "__main__":
   try:
     while True:
       #<=== packet receiving
-      # if serialPort.inWaiting() > 0: #if something is in serial port
-      #   var = readSerial(serialPort)
-      #   if(var == 0x7E): #and if this is the XBee packet
+      if serialPort.inWaiting() > 0: #if something is in serial port
+        var = readSerial(serialPort)
+        if(var == 0x7E): #and if this is the XBee packet
 
-      #     frameData = []
-      #     frameData.append(var)
+          frameData = []
+          frameData.append(var)
 
-      #     frameData.append(readSerial(serialPort))
-      #     frameData.append(readSerial(serialPort))
-      #     frameLength = frameData[1] * 256 + frameData[2]
-      #     # print "<=== received hex:", hex(var), hex(frameData[1]), hex(frameData[2]),
+          frameData.append(readSerial(serialPort))
+          frameData.append(readSerial(serialPort))
+          frameLength = frameData[1] * 256 + frameData[2]
+          # print "<=== received hex:", hex(var), hex(frameData[1]), hex(frameData[2]),
 
-      #     counter = 0
-      #     checksumsum = 0
-      #     while counter < frameLength + 1:
-      #       var = readSerial(serialPort)
-      #       frameData.append(var)
-      #       checksumsum += var
-      #       # print hex(var),
-      #       counter += 1
-      #       # print ""
+          counter = 0
+          checksumsum = 0
+          while counter < frameLength + 1:
+            var = readSerial(serialPort)
+            frameData.append(var)
+            checksumsum += var
+            # print hex(var),
+            counter += 1
+            # print ""
 
-      #     print "frameLength:", frameLength,
-      #     print "frameData:", frameData
-      #     print "checksumsum:", hex(checksumsum)
+          print "frameLength:", frameLength,
+          print "frameData:", frameData
+          print "checksumsum:", hex(checksumsum)
 
-      #     frameType = frameData[3]
-      #     # print "frameType:", hex(frameType)
+          frameType = frameData[3]
+          # print "frameType:", hex(frameType)
 
-      #     if(frameType == 0x90): #ZigBee Receive Packet Response
-      #       print "<=== ZigBee Receive Packet: ",
-      #       src64addrH = 0
-      #       for i in range(0,4):
-      #         src64addrH += frameData[i + 4] * pow(256,(3 - i))
-      #         src64addrL = 0
-      #       for i in range(0,4):
-      #         src64addrL += frameData[i + 8] * pow(256,(3 - i))
-      #         src16addr = frameData[12] * 256 + frameData[13]
-      #         receiveOptions = frameData[14]
-      #         receiveData = []
-      #       for i in range(15, frameLength + 3):
-      #         receiveData.append(frameData[i])
-      #       print "str(bytearray(receiveData)):", str(bytearray(receiveData))
+          if(frameType == 0x90): #ZigBee Receive Packet Response
+            print "<=== ZigBee Receive Packet: ",
+            src64addrH = 0
+            for i in range(0,4):
+              src64addrH += frameData[i + 4] * pow(256,(3 - i))
+              src64addrL = 0
+            for i in range(0,4):
+              src64addrL += frameData[i + 8] * pow(256,(3 - i))
+              src16addr = frameData[12] * 256 + frameData[13]
+              receiveOptions = frameData[14]
+              receiveData = []
+            for i in range(15, frameLength + 3):
+              receiveData.append(frameData[i])
+            print "str(bytearray(receiveData)):", str(bytearray(receiveData))
 
-      #       payloadType = receiveData[0]
-      #       # print "payloadType: ", str(hex(payloadType)), "chr(payloadType): ", str(chr(payloadType))
-      #       if payloadType == UPLINK_HEADER:
-      #         tmp_id = int(receiveData[1] - ID_PACKET_OFFSET)
-      #         tmp_temperature = double(receiveData[2:6]) / 10
-      #         tmp_dst_id = int(receiveData[6])
-      #         tmp_name = receiveData[7:len(receiveData)]
+            payloadType = receiveData[0]
+            # print "payloadType: ", str(hex(payloadType)), "chr(payloadType): ", str(chr(payloadType))
+            if payloadType == ord(UPLINK_HEADER):
+              tmp_id = int(receiveData[1] - ord(ID_PACKET_OFFSET))
+              tmp_temperature = float(receiveData[2] - ord(ID_PACKET_OFFSET)) * 100 + float(receiveData[3] - ord(ID_PACKET_OFFSET) ) * 10 + float(receiveData[4] - ord(ID_PACKET_OFFSET)) * 1 + float(receiveData[3] - ord(ID_PACKET_OFFSET)) * 0.1
+              tmp_dst_id = int(receiveData[6] - ord(ID_PACKET_OFFSET))
+              tmp_name = receiveData[7:len(receiveData)]
 
-      #         #update database
-      #         cur = conn.cursor()
-      #         cur.execute("UPDATE connectiontest SET temperature=%s, destinationid=%s WHERE connectiontest.xbeeaddr=%s", \
-      #           [tmp_temperature, tmp_dst_id, src64addrL])
-      #         conn.commit()
-      #         cur.close()
+              #update database
+              cur = conn.cursor()
+              cur.execute("UPDATE connectiontest SET temperature=%s, destinationid=%s, xbeeaddr=%s WHERE connectiontest.nodeid=%s", \
+                [tmp_temperature, tmp_dst_id, src64addrL, tmp_id])
+              conn.commit()
+              cur.close()
       #===> packet receiving
 
       #<=== broadcast packet sending
@@ -204,9 +204,9 @@ if __name__ == "__main__":
             broadcast_packet_str += chr(i[0] + ord(ID_PACKET_OFFSET))
         print broadcast_packet_str
 
-        # temp = makeZigBeeTransmitRequestPacket(0x00000000, 0x0000FFFF, 0xFFFE, broadcast_packet_str)
-        # serialPort.write(temp)
-        # time.sleep(1)
+        temp = makeZigBeeTransmitRequestPacket(0x00000000, 0x0000FFFF, 0xFFFE, broadcast_packet_str)
+        serialPort.write(temp)
+        time.sleep(1)
 
       #===> broadcast packet sending
       

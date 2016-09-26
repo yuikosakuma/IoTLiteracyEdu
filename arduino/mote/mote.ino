@@ -8,7 +8,7 @@
 */
 
 String motename = "yournamehere";
-int moteid = 1; //should be from 1 ~ 20
+int moteid = 2; //should be from 1 ~ 20
 
 #include <XBee.h>
 
@@ -145,7 +145,7 @@ void setup() {
 
   pinMode(CLICK_LED_PIN, OUTPUT);
   digitalWrite(CLICK_LED_PIN, HIGH);
-  
+
   txAddrHSB.dword = 0x0013A200;
   txAddrLSB.dword = 0x40B0A672; //the address of coordinator
 
@@ -178,9 +178,14 @@ void loop() {
     Serial.println("Button clicked");
     //array switch
     int value = getValueFromSwitches();
+    String tempValue = "0257";
+
     String payload = "";
-    payload += "Hello";
-    payload += char(value + int('0'));
+    payload += UPLINK_HEADER;
+    payload += char(moteid + int(ID_PACKET_OFFSET));
+    payload += tempValue;
+    payload += char(value + int(ID_PACKET_OFFSET));
+    payload += motename;
     payload += "\n";
     uint8_t temppayload[payload.length()];
     for (int i = 0; i < payload.length(); i++) {
