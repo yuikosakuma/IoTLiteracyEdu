@@ -1,10 +1,5 @@
-/**
+/*
    based on skecth_160416RLRNCFFPPSSTRSRSFSPTIABuggy
-  Catch Packet
-  LED On DEFIND Second
-  Send Packet
-
-  I hope that this program can visualize the route of packet of XBee
 */
 
 String MOTENAME = "yournamehere"; //recommended to be between 1 ~ 10
@@ -80,10 +75,14 @@ String getFormattedUplinkPacket(int moteid, double temperature, int voteDstId, S
   payload += "\n";
 }
 
-void sendXBeeData(union fourbyte addrHSB, union fourbyte addrLSB, uint8_t payload[], int sizeOfPayload) {
+void sendXBeeData(union fourbyte addrHSB, union fourbyte addrLSB, String payload) {
+  uint8_t temppayload[payload.length()];
+  for (int i = 0; i < payload.length(); i++) {
+    temppayload[i] = payload.charAt(i);
+  }
   Serial.println(F("Send ZbTx"));
   txAddr64 = XBeeAddress64(addrHSB.dword, addrLSB.dword);
-  txRequest = ZBTxRequest(txAddr64, payload, sizeOfPayload);
+  txRequest = ZBTxRequest(txAddr64, temppayload, sizeof(temppayload));
   xbee.send(txRequest);
 }
 
@@ -127,9 +126,9 @@ void receiveXBeeData() {
           Serial.println(tempMyVotedCounter);
           int temp_angle = 30;
           if (tempMyVotedCounter >= 5) temp_angle = 150;
-          else if (tempMyVotedCounter >= 2)temp_angle = 90;
-          else if (tempMyVotedCounter >= 1)temp_angle = 60;
-          else if (tempMyVotedCounter >= 0)temp_angle = 30;
+          else if (tempMyVotedCounter >= 2) temp_angle = 90;
+          else if (tempMyVotedCounter >= 1) temp_angle = 60;
+          else if (tempMyVotedCounter >= 0) temp_angle = 30;
           Serial.println(temp_angle);
           servoPreviousMillis = millis();
           myservo.write(temp_angle);
@@ -173,8 +172,7 @@ int getValueFromSwitches() {
   return value_from_switches;
 }
 
-//***** Measure Temperature *****
-//origined from Bob-san's program
+//Measure temperature, origined from Bob-san's program
 double getTemperature(int pin) {
   int v = 1023 - analogRead(pin);
   double res = (1023.0 / v) - 1;
@@ -209,34 +207,24 @@ void setup() {
 void loop() {
   unsigned long currentMillis = millis();
 
+  //check receiving data
   receiveXBeeData();
 
   //put off receive LED
-  if (millis() - receiveLedPreviousMillis >= receiveLedOnInterval) {
-    digitalWrite(RECEIVE_LED_PIN, LOW);
-  }
+  if (millis() - receiveLedPreviousMillis >= receiveLedOnInterval) digitalWrite(RECEIVE_LED_PIN, LOW);
 
   //put off click LED
-  if (millis() - clickLedPreviousMillis >= clickLedOnInterval) {
-    digitalWrite(CLICK_LED_PIN, LOW);
-  }
+  if (millis() - clickLedPreviousMillis >= clickLedOnInterval) digitalWrite(CLICK_LED_PIN, LOW);
 
   //make servo default
-  if (millis() - servoPreviousMillis >= servoOnInterval) {
-    myservo.write(0);
-  }
+  if (millis() - servoPreviousMillis >= servoOnInterval) myservo.write(0);
 
   //sending data
   if (clickDetection() == 1) {
     int valueFromSwitches = getValueFromSwitches();
     double tempTemperature = getTemperature(TEMP_SENSOR_PIN); //    Serial.println(tempTemperature);
     String payload = getFormattedUplinkPacket(MOTEID, tempTemperature, valueFromSwitches, MOTENAME);
-    
-    uint8_t temppayload[payload.length()];
-    for (int i = 0; i < payload.length(); i++) {
-      temppayload[i] = payload.charAt(i);
-    }
-    sendXBeeData(txAddrHSB, txAddrLSB, temppayload, sizeof(temppayload));
+    sendXBeeData(txAddrHSB, txAddrLSB, payload);
   }
 
   //koop seconds
