@@ -159,9 +159,10 @@ if __name__ == "__main__":
 
             payloadType = receiveData[0]
             # print "payloadType: ", str(hex(payloadType)), "chr(payloadType): ", str(chr(payloadType))
-            if payloadType == ord(UPLINK_HEADER):
+            if payloadType == ord(UPLINK_HEADER) and len(receiveData) > 7:
               tmp_id = int(receiveData[1] - ord(ID_PACKET_OFFSET))
-              tmp_temperature = float(receiveData[2] - ord(ID_PACKET_OFFSET)) * 100 + float(receiveData[3] - ord(ID_PACKET_OFFSET) ) * 10 + float(receiveData[4] - ord(ID_PACKET_OFFSET)) * 1 + float(receiveData[3] - ord(ID_PACKET_OFFSET)) * 0.1
+              tmp_temperature = float(receiveData[2] - ord(ID_PACKET_OFFSET)) * 100 + float(receiveData[3] - ord(ID_PACKET_OFFSET) ) * 10 + float(receiveData[4] - ord(ID_PACKET_OFFSET)) * 1 + float(receiveData[5] - ord(ID_PACKET_OFFSET)) * 0.1
+              # print "tmp_temperature:", tmp_temperature
               tmp_dst_id = int(receiveData[6] - ord(ID_PACKET_OFFSET))
               tmp_name = receiveData[7:len(receiveData)]
 

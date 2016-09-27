@@ -3,7 +3,7 @@
 */
 
 String MOTENAME = "yournamehere"; //recommended to be between 1 ~ 10
-int MOTEID = 1; //should be from 1 ~ 20
+int MOTEID = 20; //should be from 1 ~ 20
 uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
 
 #include <XBee.h>
@@ -73,6 +73,7 @@ String getFormattedUplinkPacket(int moteid, double temperature, int voteDstId, S
   payload += char(voteDstId + int(ID_PACKET_OFFSET));
   payload += MOTENAME;
   payload += "\n";
+  return payload;
 }
 
 void sendXBeeData(union fourbyte addrHSB, union fourbyte addrLSB, String payload) {
@@ -122,16 +123,14 @@ void receiveXBeeData() {
         Serial.println("This packet is from Coordinator");
         if (0 < MOTEID && MOTEID < rx.getDataLength()) {
           //here shake servo motor
-          int tempMyVotedCounter = int(receivePayload[MOTEID] - ID_PACKET_OFFSET);
-          Serial.println(tempMyVotedCounter);
+          int tempMyVotedCounter = int(receivePayload[MOTEID] - ID_PACKET_OFFSET);//          Serial.println(tempMyVotedCounter);
           int temp_angle = 30;
           if (tempMyVotedCounter >= 5) temp_angle = 150;
           else if (tempMyVotedCounter >= 2) temp_angle = 90;
           else if (tempMyVotedCounter >= 1) temp_angle = 60;
           else if (tempMyVotedCounter >= 0) temp_angle = 30;
-          Serial.println(temp_angle);
           servoPreviousMillis = millis();
-          myservo.write(temp_angle);
+          myservo.write(temp_angle); //          Serial.println(temp_angle);
         }
       }
       else { //the packet is not hopping packet
@@ -158,7 +157,7 @@ int clickDetection() {
 
 //get value from switches
 int getValueFromSwitches() {
-  Serial.println("switch_values: ");
+  Serial.print("switch_values: ");
   int value_from_switches = 0;
   for (int i = 0; i < 5; i++) {
     switch_values[i] = digitalRead(SWITCH_ARRAY_PIN[i]);
