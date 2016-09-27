@@ -1,20 +1,21 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#define RECEIVE_LED_PIN 3
-#define RECEIVE_LED_ON_INTERVAL 1000
+//button
+#define BUTTON_PIN 2
 
 //Click LED
-#define CLICK_LED_PIN 4
+#define CLICK_LED_PIN 3
 #define CLICK_LED_ON_INTERVAL 1000
+
+//Receive LED
+#define RECEIVE_LED_PIN 4
+#define RECEIVE_LED_ON_INTERVAL 1000
 
 //packet
 #define ID_PACKET_OFFSET '0'
 #define UPLINK_HEADER 'U'
 #define DOWNLINK_HEADER 'D'
-
-//button
-#define BUTTON_PIN 2
 
 //temperature sensor
 #define TEMP_SENSOR_PIN A0
