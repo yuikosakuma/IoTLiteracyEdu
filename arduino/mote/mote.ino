@@ -7,8 +7,9 @@
   I hope that this program can visualize the route of packet of XBee
 */
 
-String motename = "yournamehere";
-int moteid = 2; //should be from 1 ~ 20
+String MOTENAME = "yournamehere";
+int MOTEID = 1; //should be from 1 ~ 20
+uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
 
 #include <XBee.h>
 
@@ -52,6 +53,18 @@ int oldButtonState = 0;
 int SWITCH_ARRAY_PIN[5] = {5, 6, 7, 8, 9};
 int switch_values[5] = {0, 0, 0, 0, 0};
 
+//temperature sensor
+#define TEMP_SENSOR_PIN A0
+#define SERIESRESISTOR 10000
+#define servoOnInterval 5000
+
+//Servo
+#include <Servo.h>
+#define SERVO_PIN 10
+Servo myservo;
+unsigned long servoPreviousMillis = millis();
+#define servoOnInterval 5000
+
 void sendXBeeData(union fourbyte addrHSB, union fourbyte addrLSB, uint8_t payload[], int sizeOfPayload) {
   Serial.println(F("Send ZbTx"));
   txAddr64 = XBeeAddress64(addrHSB.dword, addrLSB.dword);
@@ -93,8 +106,18 @@ void receiveXBeeData() {
       uint8_t payloadType = receivePayload[0]; //judge whether the packet is hopping packet or not
       if (payloadType == DOWNLINK_HEADER) {
         Serial.println("This packet is from Coordinator");
-        if (0 < moteid && moteid < rx.getDataLength()) {
+        if (0 < MOTEID && MOTEID < rx.getDataLength()) {
           //here shake servo motor
+          int tempMyVotedCounter = int(receivePayload[MOTEID] - ID_PACKET_OFFSET);
+          Serial.println(tempMyVotedCounter);
+          int temp_angle = 30;
+          if (tempMyVotedCounter >= 5) temp_angle = 150;
+          else if (tempMyVotedCounter >= 2)temp_angle = 90;
+          else if (tempMyVotedCounter >= 1)temp_angle = 60;
+          else if (tempMyVotedCounter >= 0)temp_angle = 30;
+          Serial.println(temp_angle);
+          servoPreviousMillis = millis();
+          myservo.write(temp_angle);
         }
       }
       else { //the packet is not hopping packet
@@ -136,6 +159,16 @@ int getValueFromSwitches() {
   return value_from_switches;
 }
 
+//***** Measure Temperature *****
+//origined from Bob-san's program
+double getTemperature(int pin) {
+  int v = 1023 - analogRead(pin);
+  double res = (1023.0 / v) - 1;
+  res = SERIESRESISTOR / res;
+  double temp = (1 / (0.00096564 + (0.00021068 * log(res) ) + (0.000000085826 * ( pow( log(res) , 3))))) - 273.15;
+  return temp;
+}
+
 void setup() {
   Serial.begin(9600);
   xbee.setSerial(Serial); //for UNO
@@ -147,12 +180,15 @@ void setup() {
   digitalWrite(CLICK_LED_PIN, HIGH);
 
   txAddrHSB.dword = 0x0013A200;
-  txAddrLSB.dword = 0x40B0A672; //the address of coordinator
+  txAddrLSB.dword = DEST_ADDR_LSB; //the address of coordinator
 
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   for (int i = 0; i < 5; i++) {
     pinMode(SWITCH_ARRAY_PIN[i], INPUT_PULLUP);
   }
+
+  myservo.attach(SERVO_PIN, 550, 2000); //attach(pin number(must be PWM pin), MIN pulse width, MAX pulse width)
+  myservo.write(0);
 }
 
 unsigned long pastSendMillis = millis();
@@ -173,19 +209,28 @@ void loop() {
     digitalWrite(CLICK_LED_PIN, LOW);
   }
 
+  //make servo default
+  if (millis() - servoPreviousMillis >= servoOnInterval) {
+    myservo.write(0);
+  }
+
   //sending data
   if (clickDetection() == 1) {
     Serial.println("Button clicked");
-    //array switch
-    int value = getValueFromSwitches();
-    String tempValue = "0257";
+    int valueFromSwitches = getValueFromSwitches();
+    double tempTemperature = getTemperature(TEMP_SENSOR_PIN);
+    Serial.println(tempTemperature);
+    char tempStr[4];
+    sprintf(tempStr, "%04d", int(tempTemperature * 10));
+    Serial.println(tempStr);
+    //    String tempStr = "0257";
 
     String payload = "";
     payload += UPLINK_HEADER;
-    payload += char(moteid + int(ID_PACKET_OFFSET));
-    payload += tempValue;
-    payload += char(value + int(ID_PACKET_OFFSET));
-    payload += motename;
+    payload += char(MOTEID + int(ID_PACKET_OFFSET));
+    payload += tempStr;
+    payload += char(valueFromSwitches + int(ID_PACKET_OFFSET));
+    payload += MOTENAME;
     payload += "\n";
     uint8_t temppayload[payload.length()];
     for (int i = 0; i < payload.length(); i++) {

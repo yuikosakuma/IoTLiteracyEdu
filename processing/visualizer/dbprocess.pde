@@ -134,3 +134,20 @@ void displayAllDataFromDB(String tableName, String drawTextStr, int display_x, i
   //===> data fetch from database
 }
 
+void updateBroadcastFlagOnDB() {
+  connection = pgsql.connect();
+  println("pgsql connection:" + connection);
+  if (connection) {
+    try {
+      pgsql.query("UPDATE flagtest SET value=1 WHERE flagid=1"); //here is very HARD CODED. of course, I tried WHERE flagtest.name=broadcastflag, but it did not work
+      println("update succeed");
+    }        
+    catch(Exception e) {
+      println("update failed");
+    }
+    pgsql.close();
+  } else {
+    println("connect failer"); // yay, connection failed !
+  }
+}
+

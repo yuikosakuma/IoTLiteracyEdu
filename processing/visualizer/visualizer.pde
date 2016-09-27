@@ -31,18 +31,8 @@ void draw() {
 void keyPressed() {
   switch(key) {
   case ' ':
-    connection = pgsql.connect();
-    println("pgsql connection:" + connection);
-    if (connection) {
-      try {
-        pgsql.query("UPDATE flagtest SET value=1 WHERE flagid=1"); //here is very HARD CODED. of course, I tried WHERE flagtest.name=broadcastflag, but it did not work
-      }        
-      catch(Exception e) {
-      }
-      pgsql.close();
-    } else {
-      println("connect failer"); // yay, connection failed !
-    }
+  updateBroadcastFlagOnDB();
+
     break;
   case 'p' :
     positionType++;
