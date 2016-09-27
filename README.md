@@ -24,7 +24,8 @@ Following 2 tables must be configurated.
 
 SQL handling library for Processing needs Processing-2.2.1.  
 
-XBee must be API mode with escaping (API=2)
+XBee must be API mode with escaping (API=2)  
+Use XBee-Arduino library as "XBee" [https://github.com/andrewrapp/xbee-arduino](https://github.com/andrewrapp/xbee-arduino) and put this in the same directory
 
 ##data packet payload
 UplinkHeader : 'U'  
