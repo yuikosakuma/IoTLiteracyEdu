@@ -7,7 +7,7 @@
   I hope that this program can visualize the route of packet of XBee
 */
 
-String MOTENAME = "yournamehere";
+String MOTENAME = "yournamehere"; //recommended to be between 1 ~ 10
 int MOTEID = 1; //should be from 1 ~ 20
 uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
 
@@ -18,6 +18,9 @@ union fourbyte {
   uint16_t word[2];
   uint8_t byte[4];
 };
+
+//loop serial print
+unsigned long serialPreviousMillis = millis();
 
 //Receive LED
 unsigned long receiveLedPreviousMillis = millis();
@@ -64,6 +67,18 @@ int switch_values[5] = {0, 0, 0, 0, 0};
 Servo myservo;
 unsigned long servoPreviousMillis = millis();
 #define servoOnInterval 5000
+
+String getFormattedUplinkPacket(int moteid, double temperature, int voteDstId, String motename) {
+  String payload = "";
+  payload += UPLINK_HEADER;
+  payload += char(moteid + int(ID_PACKET_OFFSET));
+  char tempStr[4];
+  sprintf(tempStr, "%04d", int(temperature * 10)); //    Serial.println(tempStr); // example    String tempStr = "0257";
+  payload += tempStr;
+  payload += char(voteDstId + int(ID_PACKET_OFFSET));
+  payload += MOTENAME;
+  payload += "\n";
+}
 
 void sendXBeeData(union fourbyte addrHSB, union fourbyte addrLSB, uint8_t payload[], int sizeOfPayload) {
   Serial.println(F("Send ZbTx"));
@@ -133,14 +148,13 @@ int clickDetection() {
   int newButtonState = digitalRead(BUTTON_PIN);
   if (oldButtonState == HIGH && newButtonState == LOW) { //button pressed. CAUTION pull up
     buttonClicked = 1;
-
+    Serial.println("Button clicked");
     //put on click LED
     digitalWrite(CLICK_LED_PIN, HIGH);
     clickLedPreviousMillis = millis();
   }
   oldButtonState = newButtonState;
-  if (buttonClicked) return 1;
-  else return 0;
+  return buttonClicked;
 }
 
 //get value from switches
@@ -191,8 +205,6 @@ void setup() {
   myservo.write(0);
 }
 
-unsigned long pastSendMillis = millis();
-
 // continuously reads packets, looking for ZB Receive or Modem Status
 void loop() {
   unsigned long currentMillis = millis();
@@ -216,22 +228,10 @@ void loop() {
 
   //sending data
   if (clickDetection() == 1) {
-    Serial.println("Button clicked");
     int valueFromSwitches = getValueFromSwitches();
-    double tempTemperature = getTemperature(TEMP_SENSOR_PIN);
-    Serial.println(tempTemperature);
-    char tempStr[4];
-    sprintf(tempStr, "%04d", int(tempTemperature * 10));
-    Serial.println(tempStr);
-    //    String tempStr = "0257";
-
-    String payload = "";
-    payload += UPLINK_HEADER;
-    payload += char(MOTEID + int(ID_PACKET_OFFSET));
-    payload += tempStr;
-    payload += char(valueFromSwitches + int(ID_PACKET_OFFSET));
-    payload += MOTENAME;
-    payload += "\n";
+    double tempTemperature = getTemperature(TEMP_SENSOR_PIN); //    Serial.println(tempTemperature);
+    String payload = getFormattedUplinkPacket(MOTEID, tempTemperature, valueFromSwitches, MOTENAME);
+    
     uint8_t temppayload[payload.length()];
     for (int i = 0; i < payload.length(); i++) {
       temppayload[i] = payload.charAt(i);
@@ -239,12 +239,11 @@ void loop() {
     sendXBeeData(txAddrHSB, txAddrLSB, temppayload, sizeof(temppayload));
   }
 
-
-  //transmission
-  if (millis() - pastSendMillis > 1000) {
-    pastSendMillis += 1000;
+  //koop seconds
+  if (millis() - serialPreviousMillis > 1000) {
+    serialPreviousMillis += 1000;
     Serial.print("");
-    Serial.print(F(" loop : "));
+    Serial.print(F("loop : "));
     Serial.print(millis() - currentMillis);
     Serial.println("ms");
   }
