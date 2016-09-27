@@ -2,14 +2,14 @@
 #define MAIN_H
 
 //button
-#define BUTTON_PIN 2
+#define BUTTON_PIN 9
 
 //Click LED
 #define CLICK_LED_PIN 3
 #define CLICK_LED_ON_INTERVAL 1000
 
 //Receive LED
-#define RECEIVE_LED_PIN 4
+#define RECEIVE_LED_PIN 2
 #define RECEIVE_LED_ON_INTERVAL 1000
 
 //packet

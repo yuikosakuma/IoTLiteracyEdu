@@ -165,11 +165,14 @@ if __name__ == "__main__":
               # print "tmp_temperature:", tmp_temperature
               tmp_dst_id = int(receiveData[6] - ord(ID_PACKET_OFFSET))
               tmp_name = receiveData[7:len(receiveData)]
+              tmp_name_str = ""
+              for c in tmp_name:
+                tmp_name_str += chr(c)
 
               #update database
               cur = conn.cursor()
-              cur.execute("UPDATE connectiontest SET temperature=%s, destinationid=%s, xbeeaddr=%s WHERE connectiontest.nodeid=%s", \
-                [tmp_temperature, tmp_dst_id, src64addrL, tmp_id])
+              cur.execute("UPDATE connectiontest SET temperature=%s, destinationid=%s, xbeeaddr=%s, name=%s WHERE connectiontest.nodeid=%s", \
+                [tmp_temperature, tmp_dst_id, src64addrL, tmp_name_str, tmp_id])
               conn.commit()
               cur.close()
       #===> packet receiving

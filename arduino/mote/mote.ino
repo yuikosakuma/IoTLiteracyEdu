@@ -30,7 +30,7 @@ void setup() {
   servoPreviousMillis = millis();
 
   oldButtonState = 0;
-  int tempArray[] = {5, 6, 7, 8, 9};
+  int tempArray[] = {8, 7, 6, 5, 4};
   for (int i = 0; i < 5; i++) SWITCH_ARRAY_PIN[i] = tempArray[i];
   for (int i = 0; i < 5; i++) switch_values[i] = 0;
 
