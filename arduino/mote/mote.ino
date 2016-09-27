@@ -6,7 +6,7 @@
 #include "source.h"
 
 String MOTENAME = "yournamehere"; //recommended to be between 1 ~ 10
-int MOTEID = 20; //should be from 1 ~ 20
+int MOTEID = 0; //should be from 1 ~ 20
 uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
 
 Servo myservo;
