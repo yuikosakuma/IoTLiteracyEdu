@@ -38,9 +38,8 @@ void changeSortType() {
 
 void displaySortType(float x, float y) {
   fill(255);
-  textAlign();
   textSize(height / 20);
-  String temp_str = "Sorted by: ";
+  String temp_str = "Sorted by:\n";
   switch(sortType) {
   case 1:
     temp_str += "Temperature";
@@ -52,6 +51,31 @@ void displaySortType(float x, float y) {
     temp_str += "Node ID";
     break;
   }
+  text(temp_str, x, y);
+}
+
+void displayTempRanking(float x, float y) {
+  fill(255);
+  textSize(height / 25);
+  ArrayList<Node> tempList = new ArrayList<Node>(nodes);
+  Collections.sort(tempList, new NodeComparatorByTemperature()); 
+  String temp_str = "Temp Rank\n"
+    + "1st: " + tempList.get(0).temperature + " " + tempList.get(0).name.trim() + "\n"
+    + "2nd: " + tempList.get(1).temperature + " " + tempList.get(1).name.trim() + "\n"
+    + "3rd: " + tempList.get(2).temperature + " " + tempList.get(2).name.trim() + "\n";
+  text(temp_str, x, y);
+}
+
+void displayVCRanking(float x, float y) {
+  fill(255);
+  textSize(height / 25);
+  ArrayList<Node> tempList = new ArrayList<Node>(nodes);
+  Collections.sort(tempList, new NodeComparatorByVotedcounter()); 
+  String temp_str = "#Voted Rank\n"
+    + "1st: " + tempList.get(0).votedcounter + " " + tempList.get(0).name.trim() + "\n"
+    + "2nd: " + tempList.get(1).votedcounter + " " + tempList.get(1).name.trim() + "\n"
+    + "3rd: " + tempList.get(2).votedcounter + " " + tempList.get(2).name.trim() + "\n";
+  text(temp_str, x, y);
   text(temp_str, x, y);
 }
 

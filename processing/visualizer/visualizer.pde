@@ -16,7 +16,9 @@ void draw() {
   updateAllDataFromDB("connectiontest", "", 410, 60);
 
   changeSortType();
-  displaySortType(width / ceil(sqrt(nodes.size()) / 4), height / ceil(sqrt(nodes.size())) / 2);
+  displaySortType(5, height / ceil(sqrt(nodes.size())) / 4);
+  displayTempRanking(5 + width * 1 / 3, height / ceil(sqrt(nodes.size())) / 4);
+  displayVCRanking(5 + width * 2 / 3, height / ceil(sqrt(nodes.size())) / 4); 
  
   nodes_display();
 
