@@ -12,9 +12,12 @@ void draw() {
 
   calculateVoteOnDB("connectiontest");
 
-  displayAllDataFromDB("flagtest", "", 10, 60);
-  displayAllDataFromDB("connectiontest", "", 410, 60);
+  updateAllDataFromDB("flagtest", "", 10, 60);
+  updateAllDataFromDB("connectiontest", "", 410, 60);
 
+  changeSortType();
+  displaySortType(width / ceil(sqrt(nodes.size()) / 4), height / ceil(sqrt(nodes.size())) / 2);
+ 
   nodes_display();
 
   //loop time and framerate drawing <===
@@ -31,12 +34,11 @@ void draw() {
 void keyPressed() {
   switch(key) {
   case ' ':
-  updateBroadcastFlagOnDB();
-
+    updateBroadcastFlagOnDB();
     break;
   case 'p' :
     positionType++;
-    if (positionType > 4) positionType = 0;
+    if (positionType > 5) positionType = 0;
     break;  
   case 's' :
     sortType++;

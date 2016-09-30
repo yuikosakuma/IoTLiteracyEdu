@@ -1,6 +1,6 @@
 ArrayList<Node> nodes;
 
-int positionType = 0;
+int positionType = 4;
 
 class Node {
   float x, y;
@@ -73,21 +73,9 @@ void nodes_display() {
   float nodesNumber = nodes.size();
   int i = 0;
   int squareNumber = ceil(sqrt(nodesNumber));
-  switch(sortType) {
-  case 1: //Temperature
-    //destructive sort
-    Collections.sort(nodes, new NodeComparatorByTemperature()); 
-    break;
-  case 2: //VotedCounter
-    //destructive sort
-    Collections.sort(nodes, new NodeComparatorByVotedcounter());   
-    break;
-  default: //nodeid
-    //destructive sort
-    Collections.sort(nodes, new NodeComparatorByNodeid()); 
-    break;
-  }
-
+  
+  //displaying and sort
+  //dynamic position calculation <===
   switch(positionType) {
   case 1: //linear
     for (Node tempNode : nodes) {
@@ -95,6 +83,9 @@ void nodes_display() {
       (i + 0.5)/ nodesNumber *  width, 
       (i + 0.5)/ nodesNumber * height);
       i++;
+    }
+    for (Node tempNode : nodes) {
+      tempNode.drawNode();
     }
     break;
   case 2: //Square Grid
@@ -104,6 +95,9 @@ void nodes_display() {
       (i / squareNumber + 0.5) / squareNumber * height);
       //      println(i + " " + i / squareNumber);
       i++;
+    }
+    for (Node tempNode : nodes) {
+      tempNode.drawNode();
     }
     break;
   case 3: //circle
@@ -115,22 +109,28 @@ void nodes_display() {
       circleY * sin((float) i / nodesNumber *  2 * PI) + 0.5 * height);
       i++;
     }
+    for (Node tempNode : nodes) {
+      tempNode.drawNode();
+    }
+    break;
+  case 4: //cells
+    for (Node tempNode : nodes) {
+      displayCell(tempNode.nodeid, tempNode.temperature, tempNode.destinationid, tempNode.votedcounter, tempNode.name, 
+      (i % squareNumber) *  (width / squareNumber), (i/ squareNumber) * (height / squareNumber) + (height / squareNumber), 
+      width / squareNumber, height / squareNumber);
+      i++;
+    }
     break;
   default: //list
     for (Node tempNode : nodes) {
       tempNode.updateDrawParameter(0, 0);
       i++;
     }
+    for (Node tempNode : nodes) {
+      tempNode.drawNode();
+    }
     break;
   }
-  //dynamic position calculation <===
-
   //===> dynamic position calculation
-
-  //drawing Nodes or something like that <===
-  for (Node tempNode : nodes) {
-    tempNode.drawNode();
-  }
-  // ===> drawing Nodes
 }
 

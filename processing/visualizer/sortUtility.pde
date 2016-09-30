@@ -18,6 +18,43 @@ public class NodeComparatorByVotedcounter implements Comparator<Node> {
   }
 } 
 
+void changeSortType() {
+  //for sort
+  switch(sortType) {
+  case 1: //Temperature
+    //destructive sort
+    Collections.sort(nodes, new NodeComparatorByTemperature()); 
+    break;
+  case 2: //VotedCounter
+    //destructive sort
+    Collections.sort(nodes, new NodeComparatorByVotedcounter());   
+    break;
+  default: //nodeid
+    //destructive sort
+    Collections.sort(nodes, new NodeComparatorByNodeid()); 
+    break;
+  }
+}
+
+void displaySortType(float x, float y) {
+  fill(255);
+  textAlign();
+  textSize(height / 20);
+  String temp_str = "Sorted by: ";
+  switch(sortType) {
+  case 1:
+    temp_str += "Temperature";
+    break;
+  case 2:
+    temp_str += "Voted count";
+    break;
+  default:
+    temp_str += "Node ID";
+    break;
+  }
+  text(temp_str, x, y);
+}
+
 //// ---------------------- Example ---------------------
 ////refer to http://java.keicode.com/lib/collections-sort.php
 //
