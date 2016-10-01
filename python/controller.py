@@ -36,7 +36,7 @@ def makeZigBeeTransmitRequestPacket(dst64addrH, dst64addrL, dst16addr, payLoad):
     dst64addrH = dst64addrH / 256
     sp7 = chr(dst64addrH % 256)
     dst64addrH = dst64addrH / 256
-    sp6 = chr(dst64addrH % 256)
+    sp6 = chr(dst64addrH % 256) 
     dst64addrH = dst64addrH / 256
     sp5 = chr(dst64addrH % 256)
 
@@ -88,7 +88,8 @@ if __name__ == "__main__":
   #<=== Serial port initialization
   print "serial port initialization start"
   # port = '/dev/ttyUSB0' #XBee Explorer via USB that is for raspberry pi
-  port = 'COM7' #XBee Explorer
+  # port = 'COM7' #XBee Explorer
+  port = 'COM17'
   serialPort = serial.Serial(port, 9600, timeout = 1)
   print port + " is opend"
   time.sleep(2) #wait for establishing stable serial connection

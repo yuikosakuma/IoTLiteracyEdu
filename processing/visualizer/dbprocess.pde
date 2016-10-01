@@ -67,7 +67,7 @@ void calculateVoteOnDB(String tableName) {
   }
 }
 
-void displayAllDataFromDB(String tableName, String drawTextStr, int display_x, int display_y) {
+void updateAllDataFromDB(String tableName, String drawTextStr, int display_x, int display_y) {
   //data fetch from database <===
   connection = pgsql.connect();
   println("pgsql connection:" + connection);

@@ -6,7 +6,7 @@
 //  noStroke();
 //}
 
-void makeUI(int ID, float Temp, int DstID, int voted, String name, int x, int y, int w, int h) {
+void displayCell(int ID, float Temp, int DstID, int voted, String name, float x, float y, int w, int h) {
   stroke(79, 0, 178);
   if (w/40<h/40)  strokeWeight(w/40);
   else strokeWeight(h/40);
@@ -79,7 +79,7 @@ void makeUI(int ID, float Temp, int DstID, int voted, String name, int x, int y,
 //  rect(0, 0, width, height);
 //  for (int k = 0; k < 5; k++) {
 //    for (int j = 0; j < 5; j++) {
-//      makeUI(1, float(i), 1, 1, "ohno", k * width/5, j * height/5, width/5, height/5);
+//      displayCell(1, float(i), 1, 1, "ohno", k * width/5, j * height/5, width/5, height/5);
 //    }
 //  }
 //  delay(100);
