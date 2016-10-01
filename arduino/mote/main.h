@@ -1,3 +1,9 @@
+/*
+ * main.h
+ * Author: Tada Matz
+ * Comment: define pins and interval
+ */
+
 #ifndef MAIN_H
 #define MAIN_H
 
@@ -23,6 +29,6 @@
 
 //Servo
 #define SERVO_PIN 10
-#define SERVO_ON_INTERVAL 5000
+#define SERVO_ON_INTERVAL 3000
 
 #endif

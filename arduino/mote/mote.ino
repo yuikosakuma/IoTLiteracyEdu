@@ -1,17 +1,21 @@
 /*
-   based on skecth_160416RLRNCFFPPSSTRSRSFSPTIABuggy
-*/
+ * mote.ino
+ * Program for Arduino
+ * Keio University Westlab 2016.10
+ * Author: Tada Matz
+ */
+
+//<==== Please change according to an instruction
+String MOTENAME = "yournamehere"; //recommended to be between 1 ~ 10
+int MOTEID = 0; //should be from 1 ~ 20
+uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
+//====>Please change according to an instruction
 
 #include "XBee.h"
 #include "source.h"
 
-String MOTENAME = "yournamehere"; //recommended to be between 1 ~ 10
-int MOTEID = 0; //should be from 1 ~ 20
-uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
-
 Servo myservo;
-Mine mine;
-MyClass myclass;
+MyXBee myxbee;
 
 int oldButtonState;
 int SWITCH_ARRAY_PIN[5];    //switch
@@ -46,26 +50,21 @@ void setup() {
   myservo.attach(SERVO_PIN, 550, 2000); //attach(pin number(must be PWM pin), MIN pulse width, MAX pulse width)
   myservo.write(0);
 
-  mine.init();
+  myxbee.init();
 }
 
-// continuously reads packets, looking for ZB Receive or Modem Status
-void loop() {
-  unsigned long currentMillis = millis();
-
-  //check receiving data
-  mine.receiveXBeeData(myservo);
-
+void loop() { //loop
   if (millis() - receiveLedPreviousMillis >= RECEIVE_LED_ON_INTERVAL) digitalWrite(RECEIVE_LED_PIN, LOW);  //put off receive LED
   if (millis() - clickLedPreviousMillis >= CLICK_LED_ON_INTERVAL) digitalWrite(CLICK_LED_PIN, LOW);  //put off click LED
   if (millis() - servoPreviousMillis >= SERVO_ON_INTERVAL) myservo.write(0);  //make servo default
 
+  //check receiving data
+  myxbee.receiveXBeeData(myservo);
+
   //sending data
   if (clickDetection() == 1) {
-    myclass.myPrint();
     int valueFromSwitches = getValueFromSwitches();
-    float tempTemperature = getTemperature(TEMP_SENSOR_PIN); //    Serial.println(tempTemperature);
-    //    String payload = String(valueFromSwitches) + String(tempTemperature);
+    float tempTemperature = getTemperature(TEMP_SENSOR_PIN);
     char tempStr[1 + 1 + 4 + 1];
     sprintf(tempStr, "%c%c%04d%c",
             UPLINK_HEADER,
@@ -74,21 +73,17 @@ void loop() {
             valueFromSwitches + int(ID_PACKET_OFFSET));
     String temppayload = "";
     temppayload += tempStr + MOTENAME + "\n";
-    mine.sendXBeeData(temppayload);
+    myxbee.sendXBeeData(temppayload);
   }
 
-  //koop seconds
+  //loop seconds
   if (millis() - serialPreviousMillis > 1000) {
     serialPreviousMillis += 1000;
-    Serial.print("");
-    Serial.print(F("loop : "));
-    Serial.print(millis() - currentMillis);
-    Serial.println(F("ms"));
+    Serial.println(F("in a loop"));
   }
 }
 
-//click detection
-int clickDetection() {
+int clickDetection() { //click detection
   int buttonClicked = 0;
   int newButtonState = digitalRead(BUTTON_PIN);
   if (oldButtonState == HIGH && newButtonState == LOW) { //button pressed. CAUTION pull up
@@ -102,8 +97,7 @@ int clickDetection() {
   return buttonClicked;
 }
 
-//get value from switches
-int getValueFromSwitches() {
+int getValueFromSwitches() { //get value from switches
   Serial.print(F("switch_values: "));
   int value_from_switches = 0;
   for (int i = 0; i < 5; i++) {
@@ -118,8 +112,7 @@ int getValueFromSwitches() {
   return value_from_switches;
 }
 
-//Measure temperature, origined from Bob-san's program
-float getTemperature(int pin) {
+float getTemperature(int pin) { //Measure temperature, origined from Bob-san's program
   int v = 1023 - analogRead(pin);
   float res = (1023.0 / v) - 1;
   res = SERIESRESISTOR / res;

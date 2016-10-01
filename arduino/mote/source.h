@@ -1,3 +1,9 @@
+/*
+ * source.h
+ * Author: Tada Matz
+ * Comment: MyXBee class. simple XBee handler
+ */
+
 #ifndef SOURCE_H
 #define SOURCE_H
 
@@ -21,32 +27,26 @@ extern unsigned long clickLedPreviousMillis;
 extern unsigned long servoPreviousMillis;
 
 //==========class
-class Mine {
+class MyXBee {
   public:
     //=== members ===
     //XBee
-    XBee myxbee;
+    XBee xbee;
     //receive
-    XBeeResponse myresponse;
-    ZBRxResponse myrx; // create reusable response objects for responses we expect to handle
+    XBeeResponse response;
+    ZBRxResponse rx; // create reusable response objects for responses we expect to handle
     //for send
-    uint32_t mytxAddrHSB;
-    uint32_t mytxAddrLSB;
-    XBeeAddress64 mytxAddr64;
-    ZBTxRequest mytxRequest;
+    uint32_t txAddrHSB;
+    uint32_t txAddrLSB;
+    XBeeAddress64 txAddr64;
+    ZBTxRequest txRequest;
 
     //=== methods ===
-    Mine();
+    MyXBee();
     void init();
     //xbee
     void sendXBeeData(String payload);
     void receiveXBeeData(Servo servo);
-};
-
-//for test
-class MyClass {
-  public:
-    void myPrint();
 };
 
 #endif //ifndef SOURCE_H
