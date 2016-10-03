@@ -5,15 +5,6 @@ import time
 import array
 import sys
 
-import psycopg2
-from psycopg2.extensions import adapt, register_adapter, AsIs
-import datetime
-import random
-
-ID_PACKET_OFFSET = '0'
-UPLINK_HEADER = 'U'
-DOWNLINK_HEADER = 'D'
-
 def readSerial(ser): #can process the Escape mode API = 2
     var = ord(ser.read())
     if(var == 0x7D):
@@ -78,13 +69,9 @@ def makeZigBeeTransmitRequestPacket(dst64addrH, dst64addrL, dst16addr, payLoad):
 
     return sendPacket
 
+pastTime = time.time()
+
 if __name__ == "__main__":
-  #database intialization <===
-  print "database initialization start"
-  conn = psycopg2.connect(host="localhost", database="iotedu", user="postgres", password="mypgsql")
-  print "database initialization end"
-  #===>database
-  
   #<=== Serial port initialization
   print "serial port initialization start"
   # port = '/dev/ttyUSB0' #XBee Explorer via USB that is for raspberry pi
@@ -95,21 +82,6 @@ if __name__ == "__main__":
   time.sleep(2) #wait for establishing stable serial connection
   print "serial port initialization end"
   #===> Serial port initialization
-
-  #<=== initial data printing
-  cur = conn.cursor()
-  cur.execute("SELECT * FROM connectiontest ORDER BY nodeid")
-  result = cur.fetchall()
-  print result
-  if result == []:
-    print "oh... no data"
-  else:
-    print "yeah... we have data"
-    for row in result:
-      print row
-  conn.commit()
-  cur.close()  
-  #===> initial data printing
 
   try:
     while True:
@@ -158,57 +130,11 @@ if __name__ == "__main__":
               receiveData.append(frameData[i])
             print "str(bytearray(receiveData)):", str(bytearray(receiveData))
 
-            payloadType = receiveData[0]
-            # print "payloadType: ", str(hex(payloadType)), "chr(payloadType): ", str(chr(payloadType))
-            if payloadType == ord(UPLINK_HEADER) and len(receiveData) > 7:
-              tmp_id = int(receiveData[1] - ord(ID_PACKET_OFFSET))
-              tmp_temperature = float(receiveData[2] - ord(ID_PACKET_OFFSET)) * 100 + float(receiveData[3] - ord(ID_PACKET_OFFSET) ) * 10 + float(receiveData[4] - ord(ID_PACKET_OFFSET)) * 1 + float(receiveData[5] - ord(ID_PACKET_OFFSET)) * 0.1
-              # print "tmp_temperature:", tmp_temperature
-              tmp_dst_id = int(receiveData[6] - ord(ID_PACKET_OFFSET))
-              tmp_name = receiveData[7:len(receiveData)]
-              tmp_name_str = ""
-              for c in tmp_name:
-                tmp_name_str += chr(c)
-
-              #update database
-              cur = conn.cursor()
-              cur.execute("UPDATE connectiontest SET temperature=%s, destinationid=%s, xbeeaddr=%s, name=%s WHERE connectiontest.nodeid=%s", \
-                [tmp_temperature, tmp_dst_id, src64addrL, tmp_name_str, tmp_id])
-              conn.commit()
-              cur.close()
       #===> packet receiving
 
       #<=== broadcast packet sending
-      cur = conn.cursor()
-      cur.execute("SELECT value FROM flagtest WHERE name=%s", ["broadcastflag"])
-      tmp_value = cur.fetchone()[0]
-      conn.commit()
-      cur.close()
-      if tmp_value == 1: #clicked
-        print "triger to send broadcast packet!!"
-        cur = conn.cursor()
-        cur.execute("UPDATE flagtest SET value=%s WHERE flagtest.name=%s", [0, "broadcastflag"])
-        conn.commit()
-        cur.close()
-
-        #broadcast packet sending
-        cur = conn.cursor()
-        cur.execute("SELECT votedcounter FROM connectiontest ORDER BY nodeid")
-        votedcounter_result = cur.fetchall()
-        conn.commit()
-        cur.close()  
-
-        broadcast_packet_str = "" + DOWNLINK_HEADER
-        print broadcast_packet_str
-        print votedcounter_result
-        if votedcounter_result == []:
-          print "oh... no data"
-        else:
-          print "yeah... we have data"
-          for i in votedcounter_result:
-            broadcast_packet_str += chr(i[0] + ord(ID_PACKET_OFFSET))
-        print broadcast_packet_str
-
+      if time.time() - pastTime > 1:
+        pastTime = time.time()
         temp = makeZigBeeTransmitRequestPacket(0x00000000, 0x0000FFFF, 0xFFFE, broadcast_packet_str)
         serialPort.write(temp)
         time.sleep(1)
@@ -217,6 +143,6 @@ if __name__ == "__main__":
       
 
   finally:
-    serialPort.close()
-    print port + " is closed."
+    # serialPort.close()
+    # print port + " is closed."
     print "finish program"
