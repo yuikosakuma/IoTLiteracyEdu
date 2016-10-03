@@ -1,4 +1,5 @@
 #based on 160419TSIBPXMASSControllerBatteryRefineOverlapSaveDataAll
+#To do: handle minus value of Thermister. This program does not stop but value could be crazy
 
 import serial
 import time

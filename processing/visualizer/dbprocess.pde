@@ -29,6 +29,31 @@ void init_db() {
   //===> SQL initialization
 }
 
+void refreshDB(String tableName) {
+  connection = pgsql.connect();
+  println("refreshDB. pgsql connection:" + connection);
+  if (connection) {
+    try {
+      int rawNumber = 0;
+      pgsql.query( "SELECT COUNT(*) FROM " + tableName ); // query the number of entries in table "testtable"
+      if ( pgsql.next() ) {    // results found? I cant under stand why here is "next"
+        rawNumber = pgsql.getInt(1);
+        println("rows in " + tableName + " : " + rawNumber);
+
+        for (int i = 1; i < rawNumber + 1; i++) {
+          pgsql.query( "UPDATE " + tableName + " SET temperature=0, destinationid=0 WHERE nodeid=" + i);
+        }
+      }
+    }
+    catch(Exception e) {
+      println( tableName + " is not available");
+    }
+    pgsql.close();
+  } else {
+    println("connect failer"); // yay, connection failed !
+  }
+}
+
 void calculateVoteOnDB(String tableName) {
   connection = pgsql.connect();
   println("calculateVoteOnDB. pgsql connection:" + connection);

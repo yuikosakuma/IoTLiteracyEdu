@@ -7,7 +7,7 @@
 //}
 
 void displayCell(int ID, float Temp, int DstID, int voted, String name, float x, float y, int w, int h) {
-  stroke(79, 0, 178);
+   stroke(79, 0, 178);
   if (w/40<h/40)  strokeWeight(w/40);
   else strokeWeight(h/40);
   strokeJoin(ROUND);
@@ -19,11 +19,12 @@ void displayCell(int ID, float Temp, int DstID, int voted, String name, float x,
   }
   PFont myFont = loadFont("BerlinSansFB-Reg-48.vlw");
   textFont(myFont);
-  if (Temp<=16)  fill(16, 16, Temp*16);
-  else if (Temp<=32 && Temp>16) fill(50, (Temp-16)*16, 255-(Temp-16)*16);
-  else if (Temp<=64 && Temp>32) fill((Temp-32)*8, 255-(Temp-32)*8, 50);
-  else if (Temp<=96 && Temp>64) fill(255, (Temp-64)*8, (Temp-64)*8);
-  else fill(255, 255, 255);
+  if (Temp<-25.5)  fill(0, 0, 255);
+  else if (Temp<0 && Temp>=-25.5) fill(0, (Temp+25.5)*10, 255);
+  else if (Temp<25.5 && Temp>=0) fill(0, 255, 255-Temp*10);
+  else if (Temp<51 && Temp>=25.5) fill((Temp-25.5)*10, 255, 0);
+  else if (Temp<76.5 && Temp>=51) fill(255,255-(Temp-51)*10, 0);
+  else fill(255, 0, 0);
   rect(x, y, w, h);
   fill(0, 0, 0);
   textSize(tsize*2);
