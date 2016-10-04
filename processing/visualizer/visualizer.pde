@@ -38,7 +38,7 @@ void keyPressed() {
   case ' ':
     updateBroadcastFlagOnDB();
     break;
-  case 'r':
+  case 'R':
     refreshDB("connectiontest");
     break;
   case 'p' :

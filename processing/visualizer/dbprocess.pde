@@ -40,9 +40,10 @@ void refreshDB(String tableName) {
         rawNumber = pgsql.getInt(1);
         println("rows in " + tableName + " : " + rawNumber);
 
-        for (int i = 1; i < rawNumber + 1; i++) {
-          pgsql.query( "UPDATE " + tableName + " SET temperature=0, destinationid=0 WHERE nodeid=" + i);
-        }
+//        for (int i = 1; i < rawNumber + 1; i++) {
+//          pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=" + "yourname" + " WHERE nodeid=" + i);
+//        }
+          pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=\'yourname\'");
       }
     }
     catch(Exception e) {
