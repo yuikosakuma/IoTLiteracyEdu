@@ -1,7 +1,10 @@
+import de.bezier.data.sql.*;
+import de.bezier.data.sql.mapper.*;
+
 int pastTime = millis(); 
 
 void setup() {
-  size(1200, 1200);
+  size(1200, 800);
   init_db();
 }
 
