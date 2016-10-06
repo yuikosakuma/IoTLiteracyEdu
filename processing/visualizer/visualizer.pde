@@ -13,8 +13,17 @@ void draw() {
 
   calculateVoteOnDB("connectiontest");
 
-  updateAllDataFromDB("flagtest", "", 10, 60);
-  updateAllDataFromDB("connectiontest", "", 410, 60);
+  String flagtestStr = updateAllDataFromDB("flagtest");
+  String connectiontestStr = updateAllDataFromDB("connectiontest");
+
+  ////display DB in Table looks <====
+  //  textAlign(LEFT);
+  //  textSize(12);
+  //  fill(255, 100);
+  //  text(flagtestStr, 10, 60);
+  //  text(connectiontestStr, 410, 60);
+  //  noFill();
+  ////====> display DB in Table looks
 
   changeSortType();
   displaySortType(5, height / ceil(sqrt(nodes.size())) / 4);
@@ -23,15 +32,15 @@ void draw() {
 
   nodes_display();
 
-  //loop time and framerate drawing <===
-  textAlign(LEFT);
-  textSize(15);
-  fill(255, 200);
-  int interval = millis() - pastTime;
-  pastTime = millis();
-  text("one loop by millis() interval: " + interval + "ms frameRate: " + frameRate, 10, 30);
-  noFill();
-  //===> loop time and framerate drawing
+  //  //loop time and framerate drawing <===
+  //  textAlign(LEFT);
+  //  textSize(15);
+  //  fill(255, 200);
+  //  int interval = millis() - pastTime;
+  //  pastTime = millis();
+  //  text("one loop by millis() interval: " + interval + "ms frameRate: " + frameRate, 10, 30);
+  //  noFill();
+  //  //===> loop time and framerate drawing
 }
 
 void keyPressed() {
@@ -54,3 +63,4 @@ void keyPressed() {
     break;
   }
 }
+
