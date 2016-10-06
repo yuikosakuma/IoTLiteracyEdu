@@ -13,6 +13,7 @@ void init_db() {
   String database = "iotedu";
 
   pgsql = new PostgreSQL(this, "localhost", database, user, pass );
+  //pgsql = new PostgreSQL(this, "10.24.129.183", database, user, pass );
 
   connection = pgsql.connect();
   println("pgsql connection:" + connection);
@@ -42,10 +43,10 @@ void refreshDB(String tableName) {
         rawNumber = pgsql.getInt(1);
         println("rows in " + tableName + " : " + rawNumber);
 
-//        for (int i = 1; i < rawNumber + 1; i++) {
-//          pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=" + "yourname" + " WHERE nodeid=" + i);
-//        }
-          pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=\'yourname\'");
+        //        for (int i = 1; i < rawNumber + 1; i++) {
+        //          pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=" + "yourname" + " WHERE nodeid=" + i);
+        //        }
+        pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=\'yourname\'");
       }
     }
     catch(Exception e) {
@@ -95,7 +96,8 @@ void calculateVoteOnDB(String tableName) {
   }
 }
 
-void updateAllDataFromDB(String tableName, String drawTextStr, int display_x, int display_y) {
+String updateAllDataFromDB(String tableName) {
+  String drawTextStr = "";
   //data fetch from database <===
   connection = pgsql.connect();
   println("pgsql connection:" + connection);
@@ -145,12 +147,6 @@ void updateAllDataFromDB(String tableName, String drawTextStr, int display_x, in
           }          //check we have the Node or not ===>
         }
       }
-      textAlign(LEFT);
-      textSize(12);
-      fill(255, 100);
-      text(drawTextStr, display_x, display_y);
-      print("print all from " + tableName + "\n" + drawTextStr);
-      noFill();
     }
     catch(Exception e) {
       println( tableName + " is not available");
@@ -160,6 +156,7 @@ void updateAllDataFromDB(String tableName, String drawTextStr, int display_x, in
     println("connect failer"); // yay, connection failed !
   }
   //===> data fetch from database
+  return drawTextStr;
 }
 
 void updateBroadcastFlagOnDB() {

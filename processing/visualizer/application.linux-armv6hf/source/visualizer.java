@@ -3,6 +3,7 @@ import processing.data.*;
 import processing.event.*; 
 import processing.opengl.*; 
 
+import controlP5.*; 
 import de.bezier.data.sql.*; 
 import de.bezier.data.sql.mapper.*; 
 import java.util.*; 
@@ -18,12 +19,15 @@ import java.io.IOException;
 
 public class visualizer extends PApplet {
 
-
 int pastTime = millis(); 
 
 public void setup() {
+  //size(1200, 800);
+  //size(800, 600);
   
   init_db();
+
+  init_controlP5();
 }
 
 public void draw() {
@@ -33,25 +37,36 @@ public void draw() {
 
   calculateVoteOnDB("connectiontest");
 
-  updateAllDataFromDB("flagtest", "", 10, 60);
-  updateAllDataFromDB("connectiontest", "", 410, 60);
+  String flagtestStr = updateAllDataFromDB("flagtest");
+  String connectiontestStr = updateAllDataFromDB("connectiontest");
+
+  ////display DB in Table looks <====
+  //  textAlign(LEFT);
+  //  textSize(12);
+  //  fill(255, 100);
+  //  text(flagtestStr, 10, 60);
+  //  text(connectiontestStr, 410, 60);
+  //  noFill();
+  ////====> display DB in Table looks
 
   changeSortType();
   displaySortType(5, height / ceil(sqrt(nodes.size())) / 4);
-  displayTempRanking(5 + width * 1 / 3, height / ceil(sqrt(nodes.size())) / 4);
-  displayVCRanking(5 + width * 2 / 3, height / ceil(sqrt(nodes.size())) / 4); 
+  displayTempRanking(5 + width * 3 / 8, height / ceil(sqrt(nodes.size())) / 4);
+  displayVCRanking(5 + width * 6 / 8, height / ceil(sqrt(nodes.size())) / 4); 
 
   nodes_display();
 
-  //loop time and framerate drawing <===
-  textAlign(LEFT);
-  textSize(15);
-  fill(255, 200);
-  int interval = millis() - pastTime;
-  pastTime = millis();
-  text("one loop by millis() interval: " + interval + "ms frameRate: " + frameRate, 10, 30);
-  noFill();
-  //===> loop time and framerate drawing
+  loop_controlP5();
+
+  //  //loop time and framerate drawing <===
+  //  textAlign(LEFT);
+  //  textSize(15);
+  //  fill(255, 200);
+  //  int interval = millis() - pastTime;
+  //  pastTime = millis();
+  //  text("one loop by millis() interval: " + interval + "ms frameRate: " + frameRate, 10, 30);
+  //  noFill();
+  //  //===> loop time and framerate drawing
 }
 
 public void keyPressed() {
@@ -76,6 +91,66 @@ public void keyPressed() {
 }
 
 
+ControlP5 cp5;
+
+ArrayList<Button> buttonArray = new ArrayList<Button>();
+
+public void init_controlP5() {
+  cp5 = new ControlP5(this);
+
+  buttonArray.add(myAddButton("button_space", "broad\ncast", color(127, 20), 0, 0, width/2, height/2));
+  buttonArray.add(myAddButton("button_R", "Refresh", color(255, 20), width/2, 0, width/2, height/2));
+  buttonArray.add(myAddButton("button_p", "Position", color(255, 20), 0, height/2, width/2, height/2));
+  buttonArray.add(myAddButton("button_s", "Sort", color(127, 20), width/2, height/2, width/2, height/2));
+}
+
+public void loop_controlP5() {
+  fill(191, 50);
+  textAlign(CENTER, CENTER);
+  textSize(width/10);
+  for (Button tmp_button : buttonArray) {
+    text(tmp_button.getStringValue(), tmp_button.getPosition()[0] + tmp_button.getWidth()/2, tmp_button.getPosition()[1] + tmp_button.getHeight()/2);
+  }
+}
+
+public void controlEvent(ControlEvent theEvent) {
+  println(theEvent.getController().getName());
+}
+
+public Button myAddButton(String nameOfFunction, String stringValue, int c, int x, int y, int w, int h) {
+  return cp5.addButton(nameOfFunction)
+    .setPosition(x, y)
+      .setLabel("")
+      .setStringValue(stringValue)
+        .setSize(w, h)
+          .setColorActive(c) 
+            .setColorBackground(c) 
+              .setColorCaptionLabel(c) 
+                .setColorForeground(c);
+}
+
+public void displayButtonStr(String label, int c, int x, int y) {
+}
+
+public void button_space() {
+  updateBroadcastFlagOnDB();
+}
+
+public void button_R() {
+  refreshDB("connectiontest");
+}
+
+public void button_p() {
+  positionType++;
+  if (positionType > 5) positionType = 0;
+}
+
+public void button_s() {
+  sortType++;
+  if (sortType > 2) sortType = 0;
+}
+
+
 
 
 
@@ -89,6 +164,7 @@ public void init_db() {
   String database = "iotedu";
 
   pgsql = new PostgreSQL(this, "localhost", database, user, pass );
+  //pgsql = new PostgreSQL(this, "10.24.129.183", database, user, pass );
 
   connection = pgsql.connect();
   println("pgsql connection:" + connection);
@@ -118,10 +194,10 @@ public void refreshDB(String tableName) {
         rawNumber = pgsql.getInt(1);
         println("rows in " + tableName + " : " + rawNumber);
 
-//        for (int i = 1; i < rawNumber + 1; i++) {
-//          pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=" + "yourname" + " WHERE nodeid=" + i);
-//        }
-          pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=\'yourname\'");
+        //        for (int i = 1; i < rawNumber + 1; i++) {
+        //          pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=" + "yourname" + " WHERE nodeid=" + i);
+        //        }
+        pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=\'yourname\'");
       }
     }
     catch(Exception e) {
@@ -171,7 +247,8 @@ public void calculateVoteOnDB(String tableName) {
   }
 }
 
-public void updateAllDataFromDB(String tableName, String drawTextStr, int display_x, int display_y) {
+public String updateAllDataFromDB(String tableName) {
+  String drawTextStr = "";
   //data fetch from database <===
   connection = pgsql.connect();
   println("pgsql connection:" + connection);
@@ -221,12 +298,6 @@ public void updateAllDataFromDB(String tableName, String drawTextStr, int displa
           }          //check we have the Node or not ===>
         }
       }
-      textAlign(LEFT);
-      textSize(12);
-      fill(255, 100);
-      text(drawTextStr, display_x, display_y);
-      print("print all from " + tableName + "\n" + drawTextStr);
-      noFill();
     }
     catch(Exception e) {
       println( tableName + " is not available");
@@ -236,6 +307,7 @@ public void updateAllDataFromDB(String tableName, String drawTextStr, int displa
     println("connect failer"); // yay, connection failed !
   }
   //===> data fetch from database
+  return drawTextStr;
 }
 
 public void updateBroadcastFlagOnDB() {
@@ -263,6 +335,7 @@ public void updateBroadcastFlagOnDB() {
 //}
 
 public void displayCell(int ID, float Temp, int DstID, int voted, String name, float x, float y, int w, int h) {
+  textAlign(LEFT);
    stroke(79, 0, 178);
   if (w/40<h/40)  strokeWeight(w/40);
   else strokeWeight(h/40);
@@ -517,6 +590,7 @@ public void changeSortType() {
 
 public void displaySortType(float x, float y) {
   fill(255);
+  textAlign(LEFT);
   textSize(height / 20);
   String temp_str = "Sorted by:\n";
   switch(sortType) {
@@ -535,6 +609,7 @@ public void displaySortType(float x, float y) {
 
 public void displayTempRanking(float x, float y) {
   fill(255);
+  textAlign(LEFT);
   textSize(height / 25);
   ArrayList<Node> tempList = new ArrayList<Node>(nodes);
   Collections.sort(tempList, new NodeComparatorByTemperature()); 
@@ -547,6 +622,7 @@ public void displayTempRanking(float x, float y) {
 
 public void displayVCRanking(float x, float y) {
   fill(255);
+  textAlign(LEFT);
   textSize(height / 25);
   ArrayList<Node> tempList = new ArrayList<Node>(nodes);
   Collections.sort(tempList, new NodeComparatorByVotedcounter()); 

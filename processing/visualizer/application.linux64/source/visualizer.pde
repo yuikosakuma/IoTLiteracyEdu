@@ -1,9 +1,12 @@
-
 int pastTime = millis(); 
 
 void setup() {
+  //size(1200, 800);
+  //size(800, 600);
   size(320, 240);
   init_db();
+
+  init_controlP5();
 }
 
 void draw() {
@@ -13,25 +16,36 @@ void draw() {
 
   calculateVoteOnDB("connectiontest");
 
-  updateAllDataFromDB("flagtest", "", 10, 60);
-  updateAllDataFromDB("connectiontest", "", 410, 60);
+  String flagtestStr = updateAllDataFromDB("flagtest");
+  String connectiontestStr = updateAllDataFromDB("connectiontest");
+
+  ////display DB in Table looks <====
+  //  textAlign(LEFT);
+  //  textSize(12);
+  //  fill(255, 100);
+  //  text(flagtestStr, 10, 60);
+  //  text(connectiontestStr, 410, 60);
+  //  noFill();
+  ////====> display DB in Table looks
 
   changeSortType();
   displaySortType(5, height / ceil(sqrt(nodes.size())) / 4);
-  displayTempRanking(5 + width * 1 / 3, height / ceil(sqrt(nodes.size())) / 4);
-  displayVCRanking(5 + width * 2 / 3, height / ceil(sqrt(nodes.size())) / 4); 
+  displayTempRanking(5 + width * 3 / 8, height / ceil(sqrt(nodes.size())) / 4);
+  displayVCRanking(5 + width * 6 / 8, height / ceil(sqrt(nodes.size())) / 4); 
 
   nodes_display();
 
-  //loop time and framerate drawing <===
-  textAlign(LEFT);
-  textSize(15);
-  fill(255, 200);
-  int interval = millis() - pastTime;
-  pastTime = millis();
-  text("one loop by millis() interval: " + interval + "ms frameRate: " + frameRate, 10, 30);
-  noFill();
-  //===> loop time and framerate drawing
+  loop_controlP5();
+
+  //  //loop time and framerate drawing <===
+  //  textAlign(LEFT);
+  //  textSize(15);
+  //  fill(255, 200);
+  //  int interval = millis() - pastTime;
+  //  pastTime = millis();
+  //  text("one loop by millis() interval: " + interval + "ms frameRate: " + frameRate, 10, 30);
+  //  noFill();
+  //  //===> loop time and framerate drawing
 }
 
 void keyPressed() {
