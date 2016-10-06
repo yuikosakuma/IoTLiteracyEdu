@@ -49,6 +49,7 @@ After:
 ```  
 
 Step 3. execute `ant` command.  
+Then you should be able to use BezierSQLib with Processing-3.
 
 XBee must be API mode with escaping (API=2)  
 Use XBee-Arduino library as "XBee" [https://github.com/andrewrapp/xbee-arduino](https://github.com/andrewrapp/xbee-arduino) and put this in the same directory
