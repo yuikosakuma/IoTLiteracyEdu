@@ -1,10 +1,8 @@
-import de.bezier.data.sql.*;
-import de.bezier.data.sql.mapper.*;
-
 int pastTime = millis(); 
 
 void setup() {
   size(1200, 800);
+  //size(320, 240);
   init_db();
 }
 
@@ -56,4 +54,3 @@ void keyPressed() {
     break;
   }
 }
-

@@ -88,8 +88,8 @@ if __name__ == "__main__":
   
   #<=== Serial port initialization
   print "serial port initialization start"
-  # port = '/dev/ttyUSB0' #XBee Explorer via USB that is for raspberry pi
-  port = 'COM7' #XBee Explorer
+  port = '/dev/ttyUSB0' #XBee Explorer via USB that is for raspberry pi
+  # port = 'COM7' #XBee Explorer
   # port = 'COM17'
   serialPort = serial.Serial(port, 9600, timeout = 1)
   print port + " is opend"
@@ -137,15 +137,15 @@ if __name__ == "__main__":
             counter += 1
             # print ""
 
-          print "frameLength:", frameLength,
-          print "frameData:", frameData
-          print "checksumsum:", hex(checksumsum)
+          #print "frameLength:", frameLength,
+          #print "frameData:", frameData
+          #print "checksumsum:", hex(checksumsum)
 
           frameType = frameData[3]
           # print "frameType:", hex(frameType)
 
           if(frameType == 0x90): #ZigBee Receive Packet Response
-            print "<=== ZigBee Receive Packet: ",
+            #print "<=== ZigBee Receive Packet: ",
             src64addrH = 0
             for i in range(0,4):
               src64addrH += frameData[i + 4] * pow(256,(3 - i))
@@ -157,19 +157,21 @@ if __name__ == "__main__":
               receiveData = []
             for i in range(15, frameLength + 3):
               receiveData.append(frameData[i])
-            print "str(bytearray(receiveData)):", str(bytearray(receiveData))
+            #print "str(bytearray(receiveData)):", str(bytearray(receiveData))
 
             payloadType = receiveData[0]
             # print "payloadType: ", str(hex(payloadType)), "chr(payloadType): ", str(chr(payloadType))
             if payloadType == ord(UPLINK_HEADER) and len(receiveData) > 7:
               tmp_id = int(receiveData[1] - ord(ID_PACKET_OFFSET))
               tmp_temperature = float(receiveData[2] - ord(ID_PACKET_OFFSET)) * 100 + float(receiveData[3] - ord(ID_PACKET_OFFSET) ) * 10 + float(receiveData[4] - ord(ID_PACKET_OFFSET)) * 1 + float(receiveData[5] - ord(ID_PACKET_OFFSET)) * 0.1
-              # print "tmp_temperature:", tmp_temperature
               tmp_dst_id = int(receiveData[6] - ord(ID_PACKET_OFFSET))
               tmp_name = receiveData[7:len(receiveData)]
               tmp_name_str = ""
               for c in tmp_name:
                 tmp_name_str += chr(c)
+              
+              print "len:", frameLength, "data:", str(bytearray(receiveData)).strip()
+              print  "id:", tmp_id, "temp:", tmp_temperature, "d_id:", tmp_dst_id, "name:", tmp_name_str.strip()
 
               #update database
               cur = conn.cursor()
