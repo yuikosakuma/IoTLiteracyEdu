@@ -1,4 +1,6 @@
-import de.bezier.data.sql.*;    
+import de.bezier.data.sql.*;
+import de.bezier.data.sql.mapper.*;
+
 import java.util.*;
 
 PostgreSQL pgsql;
@@ -176,4 +178,3 @@ void updateBroadcastFlagOnDB() {
     println("connect failer"); // yay, connection failed !
   }
 }
-

@@ -1,7 +1,8 @@
+
 int pastTime = millis(); 
 
 void setup() {
-  size(1200, 1200);
+  size(320, 240);
   init_db();
 }
 
@@ -53,4 +54,3 @@ void keyPressed() {
     break;
   }
 }
-

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+APPDIR=$(readlink -f "$0")
+APPDIR=$(dirname "$APPDIR")
+java -Djna.nosys=true -Djava.library.path="$APPDIR:$APPDIR/lib" -cp "$APPDIR:$APPDIR/lib/visualizer.jar:$APPDIR/lib/core.jar:$APPDIR/lib/jogl-all.jar:$APPDIR/lib/gluegen-rt.jar:$APPDIR/lib/jogl-all-natives-linux-amd64.jar:$APPDIR/lib/gluegen-rt-natives-linux-amd64.jar:$APPDIR/lib/BezierSQLib.jar:$APPDIR/lib/mysql-connector-java-3.1.14-bin.jar:$APPDIR/lib/postgresql-9.2-1002.jdbc3.jar:$APPDIR/lib/sqlite-jdbc-3.7.2.jar" visualizer "$@"
