@@ -2,8 +2,8 @@ int pastTime = millis();
 
 void setup() {
   //size(1200, 800);
-  size(800, 600);
-  //size(320, 240);
+  //size(800, 600);
+  size(320, 240);
   init_db();
 
   init_controlP5();
@@ -68,4 +68,3 @@ void keyPressed() {
     break;
   }
 }
-
