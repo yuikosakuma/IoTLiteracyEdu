@@ -30,10 +30,12 @@ void draw() {
 
   changeSortType();
   displaySortType(5, height / ceil(sqrt(nodes.size())) / 4);
-  displayTempRanking(5 + width * 1 / 3, height / ceil(sqrt(nodes.size())) / 4);
-  displayVCRanking(5 + width * 2 / 3, height / ceil(sqrt(nodes.size())) / 4); 
+  displayTempRanking(5 + width * 3 / 8, height / ceil(sqrt(nodes.size())) / 4);
+  displayVCRanking(5 + width * 6 / 8, height / ceil(sqrt(nodes.size())) / 4); 
 
   nodes_display();
+
+  loop_controlP5();
 
   //  //loop time and framerate drawing <===
   //  textAlign(LEFT);
@@ -66,3 +68,4 @@ void keyPressed() {
     break;
   }
 }
+

@@ -38,6 +38,7 @@ void changeSortType() {
 
 void displaySortType(float x, float y) {
   fill(255);
+  textAlign(LEFT);
   textSize(height / 20);
   String temp_str = "Sorted by:\n";
   switch(sortType) {
@@ -56,6 +57,7 @@ void displaySortType(float x, float y) {
 
 void displayTempRanking(float x, float y) {
   fill(255);
+  textAlign(LEFT);
   textSize(height / 25);
   ArrayList<Node> tempList = new ArrayList<Node>(nodes);
   Collections.sort(tempList, new NodeComparatorByTemperature()); 
@@ -68,6 +70,7 @@ void displayTempRanking(float x, float y) {
 
 void displayVCRanking(float x, float y) {
   fill(255);
+  textAlign(LEFT);
   textSize(height / 25);
   ArrayList<Node> tempList = new ArrayList<Node>(nodes);
   Collections.sort(tempList, new NodeComparatorByVotedcounter()); 

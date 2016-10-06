@@ -7,6 +7,7 @@
 //}
 
 void displayCell(int ID, float Temp, int DstID, int voted, String name, float x, float y, int w, int h) {
+  textAlign(LEFT);
    stroke(79, 0, 178);
   if (w/40<h/40)  strokeWeight(w/40);
   else strokeWeight(h/40);
