@@ -15,14 +15,41 @@ Programs are based on XMASS projects by TadaMatz.
 ##Preparation
 PostgreSQL must be installed. (Installation guide in Japanese: [http://www.dbonline.jp/postgresinstall/](http://www.dbonline.jp/postgresinstall/))  
 PostgreSQL Server should be configurated  
-Following 2 tables must be configurated.  
+Following 2 tables must be configurated.    
+Install `psycopg2` for python.
 
 * motedata
-	- nodeid(Integer), xbeeaddr(Integer), temperature(Numeric), destinationid(Integer), votedcounter(Integer)
+	- nodeid(Primary key, Integer), xbeeaddr(Integer), temperature(Numeric), destinationid(Integer), votedcounter(Integer)
 * flag
-	- flagid(Integer), name(Text), value(Integer)
+	- flagid(Primary key, Integer), name(Text), value(Integer)
 
 SQL handling library for Processing needs Processing-2.2.1.  
+Updated!!(2016/10/6): I found the way to use BezierSQLib in Processing-3.2.1.  
+I write down the way instruction to do it here.
+
+(It should work in other Linux, I guess. And also, once you have the new compiled library, you can just copy the library under "Processing/libraries" where other libraries in)  
+
+Step 1. Clone (or download ZIP) the repository from [https://github.com/fjenett/sql-library-processing](https://github.com/fjenett/sql-library-processing).  
+Step 2. Change two lines in `build.xml`.  
+
+```
+around #L15. adapt "location" the same place where the processing.exe is in. 
+Before:
+<property name="processing.classes"  
+	location="/Users/fjenett/Repos/processing/build/macosx/work/Processing.app/Contents/Resources/Java/" />
+After:
+<property name="processing.classes"  
+	location="/usr/local/lib/processing-3.2.1" /> 
+
+around #L18. adapt "location" the same place where the other libraries is in. 
+Before:
+<property name="processing" location="/Users/fjenett/Documents/Processing/libraries"/>   
+After:
+<property name="processing" location="/home/pi/sketchbook/libraries"/>   
+```  
+
+Step 3. execute `ant` command.  
+Then you should be able to import BezierSQLib on GUI.
 
 XBee must be API mode with escaping (API=2)  
 Use XBee-Arduino library as "XBee" [https://github.com/andrewrapp/xbee-arduino](https://github.com/andrewrapp/xbee-arduino) and put this in the same directory

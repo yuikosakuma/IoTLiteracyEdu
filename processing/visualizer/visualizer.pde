@@ -1,8 +1,8 @@
-
 int pastTime = millis(); 
 
 void setup() {
-  size(320, 240);
+  size(1200, 800);
+  //size(320, 240);
   init_db();
 }
 
