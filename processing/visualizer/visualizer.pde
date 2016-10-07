@@ -3,9 +3,10 @@ int pastTime = millis();
 void setup() {
   //size(1200, 800);
   //size(800, 600);
-  size(320, 240);
-  frame.setResizable(true);
-  //  surface.setResizable(true);
+  //size(320, 240);
+  fullScreen();
+  // frame.setResizable(true);
+  surface.setResizable(true);
   init_db();
 
   init_dynamicButton();
@@ -72,7 +73,7 @@ void keyPressed() {
   }
 }
 
-void mouseClicked() {
+void mousePressed() {
   mouseClicked_dynamicButton();
 }
 
