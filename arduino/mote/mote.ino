@@ -1,13 +1,13 @@
 /*
- * mote.ino
- * Program for Arduino
- * Keio University Westlab 2016.10
- * Author: Tada Matz
- */
+   mote.ino
+   Program for Arduino
+   Keio University Westlab 2016.10
+   Author: Tada Matz
+*/
 
 //<==== Please change according to an instruction
-String MOTENAME = "yourname"; //recommended to be between 1 ~ 10
-int MOTEID = 0; //should be from 1 ~ 20
+String MOTENAME = "Joe"; //recommended to be between 1 ~ 10
+int MOTEID = 7; //should be from 1 ~ 20
 uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
 //====>Please change according to an instruction
 
@@ -24,6 +24,12 @@ unsigned long serialPreviousMillis;    //loop serial print
 unsigned long receiveLedPreviousMillis;    //Receive LED
 unsigned long clickLedPreviousMillis;
 unsigned long servoPreviousMillis;
+
+#define WITH_PERIODIC
+#ifdef WITH_PERIODIC
+unsigned long sendPastMillis = millis();
+#define SEND_INTERVAL 1000
+#endif
 
 void setup() {
   Serial.begin(9600);
@@ -75,6 +81,23 @@ void loop() { //loop
     temppayload += tempStr + MOTENAME + "\n";
     myxbee.sendXBeeData(temppayload);
   }
+
+#ifdef WITH_PERIODIC
+  if (millis() - sendPastMillis > SEND_INTERVAL) {
+    sendPastMillis += SEND_INTERVAL;
+    int valueFromSwitches = getValueFromSwitches();
+    float tempTemperature = getTemperature(TEMP_SENSOR_PIN);
+    char tempStr[1 + 1 + 4 + 1];
+    sprintf(tempStr, "%c%c%04d%c",
+            UPLINK_HEADER,
+            MOTEID + int(ID_PACKET_OFFSET),
+            int(tempTemperature * 10),
+            valueFromSwitches + int(ID_PACKET_OFFSET));
+    String temppayload = "";
+    temppayload += tempStr + MOTENAME + "\n";
+    myxbee.sendXBeeData(temppayload);
+  }
+#endif
 
   //loop seconds
   if (millis() - serialPreviousMillis > 1000) {
