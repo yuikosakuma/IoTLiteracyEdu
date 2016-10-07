@@ -1,93 +1,120 @@
-import controlP5.*;
+ArrayList<DynamicButton> dynamicButtons= new ArrayList<DynamicButton>();
 
-ControlP5 cp5;
+class DynamicButton {
+  String name;
+  float x, y, w, h;
+  float position_x_ratio, position_y_ratio, width_ratio, height_ratio;
+  String label;
+  color color_label;
+  color color_default;
+  color color_clicked;
 
-class MyButton {
-  Button button;
-  int x, y, w, h;
-
-  MyButton(Button _button) {
-    button = _button;
+  DynamicButton(String _name, String _label, color _color_default, color _color_clicked, color _color_label, float _position_x_ratio, float _position_y_ratio, float _width_ratio, float _height_ratio) {
+    name = _name;
+    label = _label;
+    color_default = _color_default;
+    color_clicked = _color_clicked;
+    color_label = _color_label;
+    position_x_ratio = _position_x_ratio;
+    position_y_ratio = _position_y_ratio;
+    width_ratio = _width_ratio;
+    height_ratio = _height_ratio;
   }
 
-  void update(int _x, int _y, int _w, int _h) {
+  boolean check(int tx, int ty) {
+    if (x <= tx && tx <= x + w && y <= ty && ty <= y + h) {
+      fill(color_clicked);
+      rect(x, y, w, h);
+      return true;
+    }
+    return false;
+  }
+
+
+  void update() {
+    x = position_x_ratio * width;
+    y = position_y_ratio * height;
+    w = width_ratio * width;
+    h = height_ratio * height;
+  }
+
+  void update(float _x, float _y, float _w, float _h) {
     x = _x;
     y = _y;
     w = _w;
     h = _h;
-
-    button.setPosition(x, y)
-      .setSize(w, h)
-      .updateSize();
   }
+
   void display() {
-    text(button.getStringValue(), 
-      button.getPosition()[0] + button.getWidth()/2, 
-      button.getPosition()[1] + button.getHeight()/2);
+    noStroke();
+    fill(color_default);
+    rect(x, y, w, h);
+    textAlign(CENTER, CENTER);
+    textSize(width/10);
+    fill(color_label);
+    text(label, x + w/2, y + h/2);
   }
 };
 
-ArrayList<MyButton> buttonArray = new ArrayList<MyButton>();
-
-void init_controlP5() {
-  cp5 = new ControlP5(this);
-
-  buttonArray.add(new MyButton(myAddButton("button_space", "broad\ncast", color(127, 20), 0, 0, width/2, height/2)));
-  buttonArray.add(new MyButton(myAddButton("button_R", "Refresh", color(255, 20), width/2, 0, width/2, height/2)));
-  buttonArray.add(new MyButton(myAddButton("button_p", "Position", color(255, 20), 0, height/2, width/2, height/2)));
-  buttonArray.add(new MyButton(myAddButton("button_s", "Sort", color(127, 20), width/2, height/2, width/2, height/2)));
+void init_dynamicButton() {
+  dynamicButtons.add(new DynamicButton("button_space", "broad\ncast", 
+  color(255, 30), color(191, 30), color(191, 30), 0, 0, 0.5, 0.5));
+  dynamicButtons.add(new DynamicButton("button_27", "exit", 
+  color(255, 30), color(191, 30), color(191, 30), 0.5, 0, 0.5, 0.25));
+  dynamicButtons.add(new DynamicButton("button_R", "refresh", 
+  color(127, 30), color(191, 30), color(191, 30), 0.5, 0.25, 0.5, 0.25));
+  dynamicButtons.add(new DynamicButton("button_p", "position", 
+  color(127, 30), color(191, 30), color(191, 30), 0, 0.5, 0.5, 0.5));
+  dynamicButtons.add(new DynamicButton("button_s", "sort", 
+  color(255, 30), color(191, 30), color(191, 30), 0.5, 0.5, 0.5, 0.5));
 }
 
-void loop_controlP5() {
-  fill(191, 50);
-  textAlign(CENTER, CENTER);
-  textSize(width/10);
-
-  buttonArray.get(0).update(0, 0, width/2, height/2);
-  buttonArray.get(1).update(width/2, 0, width/2, height/2);
-  buttonArray.get(2).update(0, height/2, width/2, height/2);
-  buttonArray.get(3).update(width/2, height/2, width/2, height/2);
-
-
-  buttonArray.get(0).display();
-  buttonArray.get(1).display();
-  buttonArray.get(2).display();
-  buttonArray.get(3).display();
+void loop_dynamicButton() {
+  for (DynamicButton tmpButton : dynamicButtons) {
+    tmpButton.update();
+    tmpButton.display();
+  }
 }
 
-public void controlEvent(ControlEvent theEvent) {
-  println(theEvent.getController().getName());
+void mouseClicked_dynamicButton() {
+  for (DynamicButton tmpButton : dynamicButtons) {
+    if (tmpButton.check(mouseX, mouseY)) {
+      if (tmpButton.name == "button_space") {
+        updateBroadcastFlagOnDB();
+      } else if (tmpButton.name == "button_R") { 
+        refreshDB("connectiontest");
+      } else if (tmpButton.name == "button_27") {
+        exit();
+      } else if (tmpButton.name == "button_p") {
+        positionType++;
+        if (positionType > 5) positionType = 0;
+      } else if (tmpButton.name == "button_s") {
+        sortType++;
+        if (sortType > 2) sortType = 0;
+      }
+    }
+  }
 }
 
-Button myAddButton(String nameOfFunction, String stringValue, color c, int x, int y, int w, int h) {
-  return cp5.addButton(nameOfFunction)
-    .setPosition(x, y)
-    .setLabel("")
-    .setStringValue(stringValue)
-    .setSize(w, h)
-    .setColorActive(c) 
-    .setColorBackground(c) 
-    .setColorCaptionLabel(c) 
-    .setColorForeground(c);
-}
+//
+//void mouseClicked() {
+//  mouseClicked_dynamicButton();
+//}
+//
+//void setup() {
+//  //size(1200, 800);
+//  //size(800, 600);
+//  size(320, 240);
+//  frame.setResizable(true);
+//  //  surface.setResizable(true);
+//  init_dynamicButton();
+//}
+//
+//void draw() {
+//  background(0);
+//  fill(255, 0, 0);
+//  ellipse(width/2, height/2, width, height);
+//
+//  loop_dynamicButton();
+//}
 
-void displayButtonStr(String label, color c, int x, int y) {
-}
-
-public void button_space() {
-  updateBroadcastFlagOnDB();
-}
-
-public void button_R() {
-  refreshDB("connectiontest");
-}
-
-public void button_p() {
-  positionType++;
-  if (positionType > 5) positionType = 0;
-}
-
-public void button_s() {
-  sortType++;
-  if (sortType > 2) sortType = 0;
-}

@@ -4,10 +4,11 @@ void setup() {
   //size(1200, 800);
   //size(800, 600);
   size(320, 240);
-  surface.setResizable(true);
+  frame.setResizable(true);
+  //  surface.setResizable(true);
   init_db();
 
-  init_controlP5();
+  init_dynamicButton();
 }
 
 void draw() {
@@ -36,8 +37,7 @@ void draw() {
 
   nodes_display();
 
-  loop_controlP5();
-
+  loop_dynamicButton();
   //  //loop time and framerate drawing <===
   //  textAlign(LEFT);
   //  textSize(15);
@@ -64,8 +64,15 @@ void keyPressed() {
   case 's' :
     sortType++;
     if (sortType > 2) sortType = 0;
-    break;    
+    break;
+  case 27:
+    exit();
   default: 
     break;
   }
 }
+
+void mouseClicked() {
+  mouseClicked_dynamicButton();
+}
+
