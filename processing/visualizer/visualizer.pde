@@ -5,17 +5,18 @@ void setup() {
   //size(800, 600);
   //size(320, 240);
   //fullScreen();
-   frame.setResizable(true);
+  frame.setResizable(true);
   //surface.setResizable(true);
   init_db();
 
   init_dynamicButton();
+
+  nodes_init();
 }
 
 void draw() {
+  int pastTime = millis();
   background(0);
-
-  nodes_init();  
 
   calculateVoteOnDB("connectiontest");
 
@@ -39,15 +40,17 @@ void draw() {
   nodes_display();
 
   loop_dynamicButton();
-  //  //loop time and framerate drawing <===
-  //  textAlign(LEFT);
-  //  textSize(15);
-  //  fill(255, 200);
-  //  int interval = millis() - pastTime;
-  //  pastTime = millis();
-  //  text("one loop by millis() interval: " + interval + "ms frameRate: " + frameRate, 10, 30);
-  //  noFill();
-  //  //===> loop time and framerate drawing
+  
+  //loop time and framerate drawing <===
+  int interval = millis() - pastTime;
+  println("one loop by millis() interval: " + interval + "ms frameRate: " + frameRate);
+  //textAlign(LEFT);
+  //textSize(15);
+  //fill(255, 200);
+  //pastTime = millis();
+  //text("one loop by millis() interval: " + interval + "ms frameRate: " + frameRate, 10, 30);
+  //noFill();
+  //===> loop time and framerate drawing
 }
 
 void keyPressed() {

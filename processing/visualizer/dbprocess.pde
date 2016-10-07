@@ -133,16 +133,19 @@ String updateAllDataFromDB(String tableName) {
         }
         drawTextStr += "\n";
 
+        //println("tableName: " + tableName);
         if (tableName == "connectiontest") { //update data
           //check we have the Node or not <===
           boolean foundFlag = false; //ooo if i was in python ... however... I can do it with flag. ugly...
           for (Node tempNode : nodes) { //oooohhhh ugly.
+            //println("int(tempRaw[0]): " + int(tempRaw[0]) + " tempNode.noeid: " + tempNode.nodeid);
             if (int(tempRaw[0]) == tempNode.nodeid) {//compare 64 bit source addres LOW and found update data
+              foundFlag = true;
               tempNode.updateDataFromDB(int(tempRaw[0]), int(tempRaw[1]), float(tempRaw[2]), int(tempRaw[3]), int(tempRaw[4]), tempRaw[5]);
               break;
             }
           }
-          if (!foundFlag) {//not found insert new data
+          if (foundFlag != true) {//not found insert new data
             nodes.add(new Node(int(tempRaw[0]), int(tempRaw[1]), float(tempRaw[2]), int(tempRaw[3]), int(tempRaw[4]), tempRaw[5]));
           }          //check we have the Node or not ===>
         }

@@ -6,27 +6,37 @@
 //  noStroke();
 //}
 
-void displayCell(int ID, float Temp, int DstID, int voted, String name, float x, float y, int w, int h) {
+
+color selectColorBasedOnTemperature(float temp) {
+  color c;
+  if (temp < 25) c = color(0, constrain((temp+25)*10, 0, 255), 255, 250);
+  else if (temp < 27) c = color(0, 255, constrain(255-temp*10, 0, 255), 250);
+  else if (temp < 30) c = color(constrain((temp-27)*10, 0, 255), 255, 0, 250);
+  else if (temp < 35) c = color(255, constrain(255-(temp-30)*10, 0, 255), 0, 250);
+  else c = color(255, 0, 0, 150);
+  return c;
+}
+
+void displayCell(int ID, float Temp, int DstID, int voted, String name, float x, float y, float w, float h) {
   textAlign(LEFT);
-   stroke(79, 0, 178);
+  stroke(79, 0, 178);
   if (w/40<h/40)  strokeWeight(w/40);
   else strokeWeight(h/40);
   strokeJoin(ROUND);
   int tsize=0;
   if (w/15<=h/15) { 
-    tsize=w/10;
+    tsize=int(w)/10;
   } else { 
-    tsize=h/10;
+    tsize=int(h)/10;
   }
   PFont myFont = loadFont("BerlinSansFB-Reg-48.vlw");
   textFont(myFont);
-  if (Temp<-25.5)  fill(0, 0, 255);
-  else if (Temp<0 && Temp>=-25.5) fill(0, (Temp+25.5)*10, 255);
-  else if (Temp<25.5 && Temp>=0) fill(0, 255, 255-Temp*10);
-  else if (Temp<51 && Temp>=25.5) fill((Temp-25.5)*10, 255, 0);
-  else if (Temp<76.5 && Temp>=51) fill(255,255-(Temp-51)*10, 0);
-  else fill(255, 0, 0);
+
+  //color selection of background
+  //fill(selectColorBasedOnTemperature(Temp));
+  fill(0, 0, 0, 0);
   rect(x, y, w, h);
+
   fill(0, 0, 0);
   textSize(tsize*2);
   text("Temp", x+w/3+w/20, y+3*h/10);
