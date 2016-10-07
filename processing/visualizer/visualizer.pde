@@ -4,6 +4,7 @@ void setup() {
   //size(1200, 800);
   //size(800, 600);
   size(320, 240);
+  surface.setResizable(true);
   init_db();
 
   init_controlP5();

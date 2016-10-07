@@ -2,7 +2,12 @@ import controlP5.*;
 
 ControlP5 cp5;
 
-ArrayList<Button> buttonArray = new ArrayList<Button>();
+class MyButton extends Button{
+  public:
+  
+};
+
+ArrayList<MyButton> buttonArray = new ArrayList<MyButton>();
 
 void init_controlP5() {
   cp5 = new ControlP5(this);
@@ -18,7 +23,12 @@ void loop_controlP5() {
   textAlign(CENTER, CENTER);
   textSize(width/10);
   for (Button tmp_button : buttonArray) {
-    text(tmp_button.getStringValue(), tmp_button.getPosition()[0] + tmp_button.getWidth()/2, tmp_button.getPosition()[1] + tmp_button.getHeight()/2);
+    tmp_button.setPosition(, )
+      .setSize(,)
+      .updateSize();
+    text(tmp_button.getStringValue(), 
+      tmp_button.getPosition()[0] + tmp_button.getWidth()/2, 
+      tmp_button.getPosition()[1] + tmp_button.getHeight()/2);
   }
 }
 
@@ -26,16 +36,16 @@ public void controlEvent(ControlEvent theEvent) {
   println(theEvent.getController().getName());
 }
 
-Button myAddButton(String nameOfFunction, String stringValue, color c, int x, int y, int w, int h) {
+MyButton myAddButton(String nameOfFunction, String stringValue, color c, int x, int y, int w, int h) {
   return cp5.addButton(nameOfFunction)
     .setPosition(x, y)
-      .setLabel("")
-      .setStringValue(stringValue)
-        .setSize(w, h)
-          .setColorActive(c) 
-            .setColorBackground(c) 
-              .setColorCaptionLabel(c) 
-                .setColorForeground(c);
+    .setLabel("")
+    .setStringValue(stringValue)
+    .setSize(w, h)
+    .setColorActive(c) 
+    .setColorBackground(c) 
+    .setColorCaptionLabel(c) 
+    .setColorForeground(c);
 }
 
 void displayButtonStr(String label, color c, int x, int y) {
@@ -58,4 +68,3 @@ public void button_s() {
   sortType++;
   if (sortType > 2) sortType = 0;
 }
-
