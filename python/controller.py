@@ -175,8 +175,8 @@ if __name__ == "__main__":
 
               #update database
               cur = conn.cursor()
-              cur.execute("UPDATE connectiontest SET temperature=%s, destinationid=%s, xbeeaddr=%s, name=%s WHERE connectiontest.nodeid=%s", \
-                [tmp_temperature, tmp_dst_id, src64addrL, tmp_name_str, tmp_id])
+              cur.execute("UPDATE connectiontest SET temperature=%s, destinationid=%s, xbeeaddr=%s, name=%s, lastupdate=%s WHERE connectiontest.nodeid=%s", \
+                [tmp_temperature, tmp_dst_id, src64addrL, tmp_name_str, datetime.datetime.now(), tmp_id])
               conn.commit()
               cur.close()
       #===> packet receiving
