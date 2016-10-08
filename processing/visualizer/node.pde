@@ -10,9 +10,9 @@ class Node {
   int destinationid;
   int votedcounter;
   String name;
-  long lastupdate;
+  String lastupdate;
   YSFGraph ysfgraph;
-  
+
   Node() {
     x = 0.0;
     y = 0.0;
@@ -22,10 +22,10 @@ class Node {
     destinationid = 0;
     votedcounter = 0;
     name = "";
-    lastupdate = 0;
+    lastupdate = "";
     ysfgraph = new YSFGraph();
   }
-  Node(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, long _lastupdate) {
+  Node(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, String _lastupdate) {
     nodeid = _nodeid;
     xbeeaddr = _xbeeaddr;
     temperature = _temperature;
@@ -41,15 +41,15 @@ class Node {
     y = _y;
   }
 
-  void updateDataFromDB(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, long _lastupdate) {
+  void updateDataFromDB(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, String _lastupdate) {
     nodeid = _nodeid;
     xbeeaddr = _xbeeaddr;
     temperature = _temperature;
     destinationid = _destinationid;
     votedcounter = _votedcounter;
     name = _name;
+    if (!_lastupdate.equals(lastupdate)) ysfgraph.addValue(temperature); //add new value to graph only when new data is receved
     lastupdate = _lastupdate;
-    ysfgraph.addValue(temperature);
   }
 
   void drawNode() {
@@ -135,7 +135,8 @@ void nodes_display() {
         0.66 * cellWidth, 
         0.75 * cellHeight, 
         color(255), 
-        15, 40);
+        15, 40, 
+        tempNode.lastupdate);
       i++;
     }
 

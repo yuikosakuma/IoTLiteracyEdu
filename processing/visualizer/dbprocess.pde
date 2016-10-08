@@ -14,8 +14,8 @@ void init_db() {
   String pass     = "mypgsql";
   String database = "iotedu";
 
-  //pgsql = new PostgreSQL(this, "localhost", database, user, pass );
-  pgsql = new PostgreSQL(this, "10.24.129.183", database, user, pass );
+  pgsql = new PostgreSQL(this, "localhost", database, user, pass );
+  //pgsql = new PostgreSQL(this, "10.24.129.183", database, user, pass );
 
   connection = pgsql.connect();
   println("pgsql connection:" + connection);
@@ -44,10 +44,6 @@ void refreshDB(String tableName) {
       if ( pgsql.next() ) {    // results found? I cant under stand why here is "next"
         rawNumber = pgsql.getInt(1);
         println("rows in " + tableName + " : " + rawNumber);
-
-        //        for (int i = 1; i < rawNumber + 1; i++) {
-        //          pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=" + "yourname" + " WHERE nodeid=" + i);
-        //        }
         pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=\'yourname\'");
       }
     }
@@ -143,14 +139,7 @@ String updateAllDataFromDB(String tableName) {
           int tempdb_destinationid = int(tempRaw[3]);
           int tempdb_votedcounter = int(tempRaw[4]);
           String tempdb_name = tempRaw[5];
-          long tempdb_lastupdate = 0; //= long(tempRaw[6]); 
-
-//get time stamp
-          try {
-            tempdb_lastupdate = Timestamp.valueOf(tempRaw[6]).getTime();
-          }
-          catch(IllegalArgumentException ie) {
-          }
+          String tempdb_lastupdate = tempRaw[6]; //= long(tempRaw[6]); 
 
           //check we have the Node or not <===
           boolean foundFlag = false; //ooo if i was in python ... however... I can do it with flag. ugly...
