@@ -1,12 +1,13 @@
 int pastTime = millis(); 
 
 void setup() {
-  //size(1200, 800);
+  //fullScreen();
+
+  size(1200, 800);
   //size(800, 600);
   //size(320, 240);
-  fullScreen();
-  //frame.setResizable(true);
-  //surface.setResizable(true);
+  //frame.setResizable(true); //for proceesing-2
+  surface.setResizable(true); //for processing-3
   init_db();
 
   init_dynamicButton();
@@ -23,14 +24,14 @@ void draw() {
   String flagtestStr = updateAllDataFromDB("flagtest");
   String connectiontestStr = updateAllDataFromDB("connectiontest");
 
-  ////display DB in Table looks <====
-  //  textAlign(LEFT);
-  //  textSize(12);
-  //  fill(255, 100);
-  //  text(flagtestStr, 10, 60);
-  //  text(connectiontestStr, 410, 60);
-  //  noFill();
-  ////====> display DB in Table looks
+  //display DB in Table looks <====
+    textAlign(LEFT);
+    textSize(height / 30);
+    fill(255, 100);
+    text(flagtestStr, 0* width/3 +10, 60);
+    text(connectiontestStr, 1 * width/3 +10, 60);
+    noFill();
+  //====> display DB in Table looks
 
   changeSortType();
   displaySortType(5, height / ceil(sqrt(nodes.size())) / 4);

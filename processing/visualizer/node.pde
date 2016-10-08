@@ -10,8 +10,9 @@ class Node {
   int destinationid;
   int votedcounter;
   String name;
+  long lastupdate;
   YSFGraph ysfgraph;
-
+  
   Node() {
     x = 0.0;
     y = 0.0;
@@ -21,15 +22,17 @@ class Node {
     destinationid = 0;
     votedcounter = 0;
     name = "";
+    lastupdate = 0;
     ysfgraph = new YSFGraph();
   }
-  Node(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name) {
+  Node(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, long _lastupdate) {
     nodeid = _nodeid;
     xbeeaddr = _xbeeaddr;
     temperature = _temperature;
     destinationid = _destinationid;
     votedcounter = _votedcounter;
     name = _name;
+    lastupdate = _lastupdate;
     ysfgraph = new YSFGraph();
   }
 
@@ -38,13 +41,14 @@ class Node {
     y = _y;
   }
 
-  void updateDataFromDB(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name) {
+  void updateDataFromDB(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, long _lastupdate) {
     nodeid = _nodeid;
     xbeeaddr = _xbeeaddr;
     temperature = _temperature;
     destinationid = _destinationid;
     votedcounter = _votedcounter;
     name = _name;
+    lastupdate = _lastupdate;
     ysfgraph.addValue(temperature);
   }
 
@@ -61,7 +65,8 @@ class Node {
       + "temp:" + temperature + "\n"
       + "d_id:" + destinationid + "\n"
       + "v_cnt:" + votedcounter + "\n"
-      + "name:" + name + "\n"
+      + "name:" + name.trim() + "\n"
+      + "lastupdate:" + lastupdate + "\n"
       , x, y);
     noFill();
     noStroke();

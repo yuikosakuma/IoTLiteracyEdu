@@ -2,6 +2,8 @@ import de.bezier.data.sql.*;
 import de.bezier.data.sql.mapper.*;
 
 import java.util.*;
+import java.text.SimpleDateFormat;
+import java.sql.Timestamp;
 
 PostgreSQL pgsql;
 boolean connection;
@@ -12,8 +14,8 @@ void init_db() {
   String pass     = "mypgsql";
   String database = "iotedu";
 
-  pgsql = new PostgreSQL(this, "localhost", database, user, pass );
-  //pgsql = new PostgreSQL(this, "10.24.129.183", database, user, pass );
+  //pgsql = new PostgreSQL(this, "localhost", database, user, pass );
+  pgsql = new PostgreSQL(this, "10.24.129.183", database, user, pass );
 
   connection = pgsql.connect();
   println("pgsql connection:" + connection);
@@ -135,18 +137,33 @@ String updateAllDataFromDB(String tableName) {
 
         //println("tableName: " + tableName);
         if (tableName == "connectiontest") { //update data
+          int tempdb_nodeid = int(tempRaw[0]);
+          int tempdb_xbeeaddr = int(tempRaw[1]);
+          float tempdb_temperature = float(tempRaw[2]);
+          int tempdb_destinationid = int(tempRaw[3]);
+          int tempdb_votedcounter = int(tempRaw[4]);
+          String tempdb_name = tempRaw[5];
+          long tempdb_lastupdate = 0; //= long(tempRaw[6]); 
+
+//get time stamp
+          try {
+            tempdb_lastupdate = Timestamp.valueOf(tempRaw[6]).getTime();
+          }
+          catch(IllegalArgumentException ie) {
+          }
+
           //check we have the Node or not <===
           boolean foundFlag = false; //ooo if i was in python ... however... I can do it with flag. ugly...
           for (Node tempNode : nodes) { //oooohhhh ugly.
             //println("int(tempRaw[0]): " + int(tempRaw[0]) + " tempNode.noeid: " + tempNode.nodeid);
-            if (int(tempRaw[0]) == tempNode.nodeid) {//compare 64 bit source addres LOW and found update data
+            if (tempdb_nodeid == tempNode.nodeid) {//compare 64 bit source addres LOW and found update data
               foundFlag = true;
-              tempNode.updateDataFromDB(int(tempRaw[0]), int(tempRaw[1]), float(tempRaw[2]), int(tempRaw[3]), int(tempRaw[4]), tempRaw[5]);
+              tempNode.updateDataFromDB(tempdb_nodeid, tempdb_xbeeaddr, tempdb_temperature, tempdb_destinationid, tempdb_votedcounter, tempdb_name, tempdb_lastupdate);
               break;
             }
           }
           if (foundFlag != true) {//not found insert new data
-            nodes.add(new Node(int(tempRaw[0]), int(tempRaw[1]), float(tempRaw[2]), int(tempRaw[3]), int(tempRaw[4]), tempRaw[5]));
+            nodes.add(new Node(tempdb_nodeid, tempdb_xbeeaddr, tempdb_temperature, tempdb_destinationid, tempdb_votedcounter, tempdb_name, tempdb_lastupdate));
           }          //check we have the Node or not ===>
         }
       }
