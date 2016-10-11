@@ -6,8 +6,8 @@
 */
 
 //<==== Please change according to an instruction
-String MOTENAME = "Joe"; //recommended to be between 1 ~ 10
-int MOTEID = 7; //should be from 1 ~ 20
+String MOTENAME = "yourname here"; //recommended to be between 1 ~ 10
+int MOTEID = 0; //should be from 1 ~ 20
 uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
 //====>Please change according to an instruction
 
@@ -25,7 +25,7 @@ unsigned long receiveLedPreviousMillis;    //Receive LED
 unsigned long clickLedPreviousMillis;
 unsigned long servoPreviousMillis;
 
-#define WITH_PERIODIC
+//#define WITH_PERIODIC
 #ifdef WITH_PERIODIC
 unsigned long sendPastMillis = millis();
 #define SEND_INTERVAL 1000

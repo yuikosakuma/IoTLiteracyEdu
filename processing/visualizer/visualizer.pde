@@ -1,13 +1,13 @@
 int pastTime = millis(); 
 
 void setup() {
-  fullScreen();
+  //  fullScreen();
 
-  //size(1200, 800);
+  size(1200, 800);
   //size(800, 600);
   //size(320, 240);
   //frame.setResizable(true); //for proceesing-2
-  //surface.setResizable(true); //for processing-3
+  surface.setResizable(true); //for processing-3
   init_db();
 
   init_dynamicButton();
@@ -41,7 +41,7 @@ void draw() {
   nodes_display();
 
   loop_dynamicButton();
-  
+
   //loop time and framerate drawing <===
   int interval = millis() - pastTime;
   println("one loop by millis() interval: " + interval + "ms frameRate: " + frameRate);
@@ -80,3 +80,4 @@ void keyPressed() {
 void mousePressed() {
   mouseClicked_dynamicButton();
 }
+
