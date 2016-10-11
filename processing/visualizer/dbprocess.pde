@@ -2,6 +2,8 @@ import de.bezier.data.sql.*;
 import de.bezier.data.sql.mapper.*;
 
 import java.util.*;
+import java.text.SimpleDateFormat;
+import java.sql.Timestamp;
 
 PostgreSQL pgsql;
 boolean connection;
@@ -42,10 +44,6 @@ void refreshDB(String tableName) {
       if ( pgsql.next() ) {    // results found? I cant under stand why here is "next"
         rawNumber = pgsql.getInt(1);
         println("rows in " + tableName + " : " + rawNumber);
-
-        //        for (int i = 1; i < rawNumber + 1; i++) {
-        //          pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=" + "yourname" + " WHERE nodeid=" + i);
-        //        }
         pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=\'yourname\'");
       }
     }
@@ -133,17 +131,28 @@ String updateAllDataFromDB(String tableName) {
         }
         drawTextStr += "\n";
 
+        //println("tableName: " + tableName);
         if (tableName == "connectiontest") { //update data
+          int tempdb_nodeid = int(tempRaw[0]);
+          int tempdb_xbeeaddr = int(tempRaw[1]);
+          float tempdb_temperature = float(tempRaw[2]);
+          int tempdb_destinationid = int(tempRaw[3]);
+          int tempdb_votedcounter = int(tempRaw[4]);
+          String tempdb_name = tempRaw[5];
+          String tempdb_lastupdate = tempRaw[6]; //= long(tempRaw[6]); 
+
           //check we have the Node or not <===
           boolean foundFlag = false; //ooo if i was in python ... however... I can do it with flag. ugly...
           for (Node tempNode : nodes) { //oooohhhh ugly.
-            if (int(tempRaw[0]) == tempNode.nodeid) {//compare 64 bit source addres LOW and found update data
-              tempNode.updateDataFromDB(int(tempRaw[0]), int(tempRaw[1]), float(tempRaw[2]), int(tempRaw[3]), int(tempRaw[4]), tempRaw[5]);
+            //println("int(tempRaw[0]): " + int(tempRaw[0]) + " tempNode.noeid: " + tempNode.nodeid);
+            if (tempdb_nodeid == tempNode.nodeid) {//compare 64 bit source addres LOW and found update data
+              foundFlag = true;
+              tempNode.updateDataFromDB(tempdb_nodeid, tempdb_xbeeaddr, tempdb_temperature, tempdb_destinationid, tempdb_votedcounter, tempdb_name, tempdb_lastupdate);
               break;
             }
           }
-          if (!foundFlag) {//not found insert new data
-            nodes.add(new Node(int(tempRaw[0]), int(tempRaw[1]), float(tempRaw[2]), int(tempRaw[3]), int(tempRaw[4]), tempRaw[5]));
+          if (foundFlag != true) {//not found insert new data
+            nodes.add(new Node(tempdb_nodeid, tempdb_xbeeaddr, tempdb_temperature, tempdb_destinationid, tempdb_votedcounter, tempdb_name, tempdb_lastupdate));
           }          //check we have the Node or not ===>
         }
       }
@@ -175,4 +184,3 @@ void updateBroadcastFlagOnDB() {
     println("connect failer"); // yay, connection failed !
   }
 }
-

@@ -58,15 +58,15 @@ class DynamicButton {
 
 void init_dynamicButton() {
   dynamicButtons.add(new DynamicButton("button_space", "broad\ncast", 
-  color(255, 30), color(191, 30), color(191, 30), 0, 0, 0.5, 0.5));
+  color(255, 20), color(191, 20), color(191, 20), 0, 0, 0.5, 0.5));
   dynamicButtons.add(new DynamicButton("button_27", "exit", 
-  color(255, 30), color(191, 30), color(191, 30), 0.5, 0, 0.5, 0.25));
+  color(255, 20), color(191, 20), color(191, 20), 0.5, 0, 0.5, 0.25));
   dynamicButtons.add(new DynamicButton("button_R", "refresh", 
-  color(127, 30), color(191, 30), color(191, 30), 0.5, 0.25, 0.5, 0.25));
+  color(127, 20), color(191, 20), color(191, 20), 0.5, 0.25, 0.5, 0.25));
   dynamicButtons.add(new DynamicButton("button_p", "position", 
-  color(127, 30), color(191, 30), color(191, 30), 0, 0.5, 0.5, 0.5));
+  color(127, 20), color(191, 20), color(191, 20), 0, 0.5, 0.5, 0.5));
   dynamicButtons.add(new DynamicButton("button_s", "sort", 
-  color(255, 30), color(191, 30), color(191, 30), 0.5, 0.5, 0.5, 0.5));
+  color(255, 20), color(191, 20), color(191, 20), 0.5, 0.5, 0.5, 0.5));
 }
 
 void loop_dynamicButton() {
@@ -117,4 +117,3 @@ void mouseClicked_dynamicButton() {
 //
 //  loop_dynamicButton();
 //}
-

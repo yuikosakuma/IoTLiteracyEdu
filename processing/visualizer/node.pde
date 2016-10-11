@@ -10,6 +10,8 @@ class Node {
   int destinationid;
   int votedcounter;
   String name;
+  String lastupdate;
+  YSFGraph ysfgraph;
 
   Node() {
     x = 0.0;
@@ -20,14 +22,18 @@ class Node {
     destinationid = 0;
     votedcounter = 0;
     name = "";
+    lastupdate = "";
+    ysfgraph = new YSFGraph();
   }
-  Node(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name) {
+  Node(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, String _lastupdate) {
     nodeid = _nodeid;
     xbeeaddr = _xbeeaddr;
     temperature = _temperature;
     destinationid = _destinationid;
     votedcounter = _votedcounter;
     name = _name;
+    lastupdate = _lastupdate;
+    ysfgraph = new YSFGraph();
   }
 
   void updateDrawParameter(float _x, float _y) {
@@ -35,13 +41,15 @@ class Node {
     y = _y;
   }
 
-  void updateDataFromDB(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name) {
+  void updateDataFromDB(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, String _lastupdate) {
     nodeid = _nodeid;
     xbeeaddr = _xbeeaddr;
     temperature = _temperature;
     destinationid = _destinationid;
     votedcounter = _votedcounter;
     name = _name;
+    if (!_lastupdate.equals(lastupdate)) ysfgraph.addValue(temperature); //add new value to graph only when new data is receved
+    lastupdate = _lastupdate;
   }
 
   void drawNode() {
@@ -57,7 +65,8 @@ class Node {
       + "temp:" + temperature + "\n"
       + "d_id:" + destinationid + "\n"
       + "v_cnt:" + votedcounter + "\n"
-      + "name:" + name + "\n"
+      + "name:" + name.trim() + "\n"
+      + "lastupdate:" + lastupdate + "\n"
       , x, y);
     noFill();
     noStroke();
@@ -70,18 +79,18 @@ void nodes_init() {
 
 void nodes_display() {
   //===> data fetch from database 
-  float nodesNumber = nodes.size();
+  int nodesNumber = nodes.size();
   int i = 0;
   int squareNumber = ceil(sqrt(nodesNumber));
-  
+
   //displaying and sort
   //dynamic position calculation <===
   switch(positionType) {
   case 1: //linear
     for (Node tempNode : nodes) {
       tempNode.updateDrawParameter(
-      (i + 0.5)/ nodesNumber *  width, 
-      (i + 0.5)/ nodesNumber * height);
+        (i + 0.5)/ nodesNumber *  width, 
+        (i + 0.5)/ nodesNumber * height);
       i++;
     }
     for (Node tempNode : nodes) {
@@ -91,8 +100,8 @@ void nodes_display() {
   case 2: //Square Grid
     for (Node tempNode : nodes) {
       tempNode.updateDrawParameter(
-      (i % squareNumber + 0.5) / squareNumber *  width, 
-      (i / squareNumber + 0.5) / squareNumber * height);
+        (i % squareNumber + 0.5) / squareNumber *  width, 
+        (i / squareNumber + 0.5) / squareNumber * height);
       //      println(i + " " + i / squareNumber);
       i++;
     }
@@ -105,21 +114,43 @@ void nodes_display() {
     float circleY = 0.35*height;
     for (Node tempNode : nodes) {
       tempNode.updateDrawParameter(
-      circleX * cos((float) i / nodesNumber *  2 * PI) + 0.5 * width, 
-      circleY * sin((float) i / nodesNumber *  2 * PI) + 0.5 * height);
+        circleX * cos((float) i / nodesNumber *  2 * PI) + 0.5 * width, 
+        circleY * sin((float) i / nodesNumber *  2 * PI) + 0.5 * height);
       i++;
     }
     for (Node tempNode : nodes) {
       tempNode.drawNode();
     }
     break;
-  case 4: //cells
+  case 4: 
+    int cellWidth = width / squareNumber;
+    int cellHeight = height / squareNumber;
+
+    //graphs by Nakatsuka
+    i = 0;
     for (Node tempNode : nodes) {
-      displayCell(tempNode.nodeid, tempNode.temperature, tempNode.destinationid, tempNode.votedcounter, tempNode.name, 
-      (i % squareNumber) *  (width / squareNumber), (i/ squareNumber) * (height / squareNumber) + (height / squareNumber), 
-      width / squareNumber, height / squareNumber);
+      tempNode.ysfgraph.drawGraph(
+        (i % squareNumber) *  cellWidth + 0.34 * cellWidth, 
+        (i / squareNumber) * cellHeight + cellHeight, 
+        0.66 * cellWidth, 
+        0.75 * cellHeight, 
+        color(255), 
+        15, 40, 
+        tempNode.lastupdate);
       i++;
     }
+
+    //cells by Niwacchi
+    i = 0;    
+    for (Node tempNode : nodes) {
+      displayCell(tempNode.nodeid, tempNode.temperature, tempNode.destinationid, tempNode.votedcounter, tempNode.name, 
+        (i % squareNumber) * cellWidth, 
+        (i/ squareNumber) * cellHeight + cellHeight, 
+        cellWidth, 
+        cellHeight);
+      i++;
+    }
+
     break;
   default: //list
     for (Node tempNode : nodes) {

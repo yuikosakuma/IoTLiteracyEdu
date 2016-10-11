@@ -19,7 +19,7 @@ Following 2 tables must be configurated.
 Install `psycopg2` for python.
 
 * motedata
-	- nodeid(Primary key, Integer), xbeeaddr(Integer), temperature(Numeric), destinationid(Integer), votedcounter(Integer)
+	- nodeid(Primary key, Integer), xbeeaddr(Integer), temperature(Numeric), destinationid(Integer), votedcounter(Integer), name(text), lastupdate(Timestamp without time zone), sendflag(Integer)
 * flag
 	- flagid(Primary key, Integer), name(Text), value(Integer)
 
