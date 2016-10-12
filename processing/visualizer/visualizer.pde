@@ -34,7 +34,12 @@ void draw() {
   ////====> display DB in Table looks
 
   changeSortType();
-  displaySortType(5, height / ceil(sqrt(nodes.size())) / 4);
+
+  fill(255);
+  textAlign(LEFT, TOP);
+  textSize(height / 10);
+  text("Visualizer", 5, 0);
+  displaySortType(5, height / ceil(sqrt(nodes.size())) * 5 / 8);
   displayTempRanking(5 + width * 3 / 8, height / ceil(sqrt(nodes.size())) / 4);
   displayVCRanking(5 + width * 6 / 8, height / ceil(sqrt(nodes.size())) / 4); 
 
@@ -80,4 +85,3 @@ void keyPressed() {
 void mousePressed() {
   mouseClicked_dynamicButton();
 }
-
