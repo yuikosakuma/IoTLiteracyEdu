@@ -48,7 +48,11 @@ class Node {
     destinationid = _destinationid;
     votedcounter = _votedcounter;
     name = _name;
-    if (!_lastupdate.equals(lastupdate)) ysfgraph.addValue(temperature); //add new value to graph only when new data is receved
+    try {
+      if (!_lastupdate.equals(lastupdate)) ysfgraph.addValue(temperature); //add new value to graph only when new data is receved
+    }
+    catch(NullPointerException e) {
+    } 
     lastupdate = _lastupdate;
   }
 

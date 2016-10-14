@@ -184,4 +184,3 @@ void updateBroadcastFlagOnDB() {
     println("connect failer"); // yay, connection failed !
   }
 }
-
