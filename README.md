@@ -18,9 +18,9 @@ PostgreSQL Server should be configurated
 Following 2 tables must be configurated.    
 Install `psycopg2` for python.
 
-* motedata
+* connectiontest
 	- nodeid(Primary key, Integer), xbeeaddr(Integer), temperature(Numeric), destinationid(Integer), votedcounter(Integer), name(text), lastupdate(Timestamp without time zone), sendflag(Integer)
-* flag
+* flagtest
 	- flagid(Primary key, Integer), name(Text), value(Integer)
 
 SQL handling library for Processing needs Processing-2.2.1.  
