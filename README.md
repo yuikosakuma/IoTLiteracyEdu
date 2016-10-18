@@ -21,7 +21,7 @@ Install `psycopg2` for python.
 * connectiontest
 	- nodeid(Primary key, Integer), xbeeaddr(Integer), temperature(Numeric), destinationid(Integer), votedcounter(Integer), name(text), lastupdate(Timestamp without time zone), sendflag(Integer), volume(Integer)
 * flagtest
-	- flagid(Primary key, Integer), name(Text), value(Integer)
+	- flagid(Primary key, Integer), name(Text), value(Integer), angle(Integer)
 
 SQL handling library for Processing needs Processing-2.2.1.  
 Updated!!(2016/10/6): I found the way to use BezierSQLib in Processing-3.2.1.  

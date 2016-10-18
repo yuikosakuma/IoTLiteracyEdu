@@ -164,19 +164,19 @@ if __name__ == "__main__":
             if payloadType == ord(UPLINK_HEADER) and len(receiveData) > 7:
               tmp_id = int(receiveData[1] - ord(ID_PACKET_OFFSET))
               tmp_temperature = float(receiveData[2] - ord(ID_PACKET_OFFSET)) * 100 + float(receiveData[3] - ord(ID_PACKET_OFFSET) ) * 10 + float(receiveData[4] - ord(ID_PACKET_OFFSET)) * 1 + float(receiveData[5] - ord(ID_PACKET_OFFSET)) * 0.1
-              tmp_dst_id = int(receiveData[6] - ord(ID_PACKET_OFFSET))
-              tmp_name = receiveData[7:len(receiveData)]
+              tmp_volume = int(receiveData[6] - ord(ID_PACKET_OFFSET)) * 1000 + int(receiveData[7] - ord(ID_PACKET_OFFSET) ) * 100 + int(receiveData[8] - ord(ID_PACKET_OFFSET)) * 10 + int(receiveData[9] - ord(ID_PACKET_OFFSET)) * 1
+              tmp_name = receiveData[10:len(receiveData)]
               tmp_name_str = ""
               for c in tmp_name:
                 tmp_name_str += chr(c)
               
               print "len:", frameLength, "data:", str(bytearray(receiveData)).strip()
-              print  "id:", tmp_id, "temp:", tmp_temperature, "d_id:", tmp_dst_id, "name:", tmp_name_str.strip()
+              print  "id:", tmp_id, "temp:", tmp_temperature, "volume:", tmp_volume, "name:", tmp_name_str.strip()
 
               #update database
               cur = conn.cursor()
-              cur.execute("UPDATE connectiontest SET temperature=%s, destinationid=%s, xbeeaddr=%s, name=%s, lastupdate=%s WHERE connectiontest.nodeid=%s", \
-                [tmp_temperature, tmp_dst_id, src64addrL, tmp_name_str, datetime.datetime.utcnow(), tmp_id])
+              cur.execute("UPDATE connectiontest SET temperature=%s, volume=%s, xbeeaddr=%s, name=%s, lastupdate=%s WHERE connectiontest.nodeid=%s", \
+                [tmp_temperature, tmp_dst_id, src64addrL, tmp_name_str.strip(), datetime.datetime.utcnow(), tmp_id])
               conn.commit()
               cur.close()
       #===> packet receiving
@@ -196,20 +196,19 @@ if __name__ == "__main__":
 
         #broadcast packet sending
         cur = conn.cursor()
-        cur.execute("SELECT votedcounter FROM connectiontest ORDER BY nodeid")
-        votedcounter_result = cur.fetchall()
+        cur.execute("SELECT angle FROM flagtest WHERE flagtest.name=%s", ["broadcastflag"])
+        angle_result = cur.fetchall()
         conn.commit()
         cur.close()  
 
         broadcast_packet_str = "" + DOWNLINK_HEADER
         print broadcast_packet_str
-        print votedcounter_result
-        if votedcounter_result == []:
+        print angle_resulte
+        if angle_result == []:
           print "oh... no data"
         else:
           print "yeah... we have data"
-          for i in votedcounter_result:
-            broadcast_packet_str += chr(i[0] + ord(ID_PACKET_OFFSET))
+          broadcast_packet_str += str(angle_result[i])
         print broadcast_packet_str
 
         temp = makeZigBeeTransmitRequestPacket(0x00000000, 0x0000FFFF, 0xFFFE, broadcast_packet_str)

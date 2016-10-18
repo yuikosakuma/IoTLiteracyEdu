@@ -15,7 +15,8 @@ SELECT * FROM connectiontest;
 CREATE TABLE flagtest(
   flagid INTEGER PRIMARY KEY,
   name TEXT,
-  value INTEGER
+  value INTEGER,
+  angle INTEGER,
 );
 
 SELECT * FROM flagtest;
