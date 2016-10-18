@@ -196,18 +196,14 @@ if __name__ == "__main__":
         #broadcast packet sending
         cur = conn.cursor()
         cur.execute("SELECT angle FROM flagtest WHERE flagtest.name=%s", ["broadcastflag"])
-        angle_result = cur.fetchall()
+        angle_result = cur.fetchone()[0]
         conn.commit()
         cur.close()  
 
         broadcast_packet_str = "" + DOWNLINK_HEADER
-        print broadcast_packet_str
-        print angle_resulte
-        if angle_result == []:
-          print "oh... no data"
-        else:
-          print "yeah... we have data"
-          broadcast_packet_str += str(angle_result[i])
+        #print broadcast_packet_str
+        #print angle_result
+        broadcast_packet_str += "{0:03d}".format(angle_result)
         print broadcast_packet_str
 
         temp = makeZigBeeTransmitRequestPacket(0x00000000, 0x0000FFFF, 0xFFFE, broadcast_packet_str)
