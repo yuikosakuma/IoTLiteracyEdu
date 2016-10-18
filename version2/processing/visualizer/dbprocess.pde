@@ -14,8 +14,8 @@ void init_db() {
   String pass     = "mypgsql";
   String database = "iotedu";
 
-  pgsql = new PostgreSQL(this, "localhost", database, user, pass );
-  //  pgsql = new PostgreSQL(this, "10.24.129.183", database, user, pass );
+  //pgsql = new PostgreSQL(this, "localhost", database, user, pass );
+  pgsql = new PostgreSQL(this, "10.24.129.183", database, user, pass );
 
   connection = pgsql.connect();
   println("pgsql connection:" + connection);
@@ -44,45 +44,7 @@ void refreshDB(String tableName) {
       if ( pgsql.next() ) {    // results found? I cant under stand why here is "next"
         rawNumber = pgsql.getInt(1);
         println("rows in " + tableName + " : " + rawNumber);
-        pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=\'yourname\'");
-      }
-    }
-    catch(Exception e) {
-      println( tableName + " is not available");
-    }
-    pgsql.close();
-  } else {
-    println("connect failer"); // yay, connection failed !
-  }
-}
-
-void calculateVoteOnDB(String tableName) {
-  connection = pgsql.connect();
-  println("calculateVoteOnDB. pgsql connection:" + connection);
-  if (connection) {
-    try {
-      int rawNumber = 0;
-      pgsql.query( "SELECT COUNT(*) FROM " + tableName ); // query the number of entries in table "testtable"
-      if ( pgsql.next() ) {    // results found? I cant under stand why here is "next"
-        rawNumber = pgsql.getInt(1);
-        println("rows in " + tableName + " : " + rawNumber);
-
-        pgsql.query( "SELECT destinationid FROM " + tableName + " ORDER BY nodeid"); 
-        int[] tmp_counter = new int[rawNumber+1];
-        while ( pgsql.next () ) {
-          int tmp_dst_id = pgsql.getInt(1);
-          tmp_counter[tmp_dst_id]++; //calculation
-        }
-        print("tmp_counter: ");
-        for (int i = 0; i < tmp_counter.length; i++) {
-          print(" [" + i + "]:" + tmp_counter[i]);
-        }
-        println("");
-
-        //put it to database
-        for (int i = 1; i < tmp_counter.length; i++) {
-          pgsql.query( "UPDATE " + tableName + " SET votedcounter=" + tmp_counter[i] + " WHERE nodeid=" + i);
-        }
+        pgsql.query( "UPDATE " + tableName + " SET xbeeaddr=0, temperature=0, destinationid=0, votedcounter=0, name=\'yourname\', volume=0");
       }
     }
     catch(Exception e) {
@@ -140,6 +102,7 @@ String updateAllDataFromDB(String tableName) {
           int tempdb_votedcounter = int(tempRaw[4]);
           String tempdb_name = tempRaw[5];
           String tempdb_lastupdate = tempRaw[6]; //= long(tempRaw[6]); 
+          int tempdb_volume = int(tempRaw[8]);
 
           //check we have the Node or not <===
           boolean foundFlag = false; //ooo if i was in python ... however... I can do it with flag. ugly...
@@ -147,12 +110,12 @@ String updateAllDataFromDB(String tableName) {
             //println("int(tempRaw[0]): " + int(tempRaw[0]) + " tempNode.noeid: " + tempNode.nodeid);
             if (tempdb_nodeid == tempNode.nodeid) {//compare 64 bit source addres LOW and found update data
               foundFlag = true;
-              tempNode.updateDataFromDB(tempdb_nodeid, tempdb_xbeeaddr, tempdb_temperature, tempdb_destinationid, tempdb_votedcounter, tempdb_name, tempdb_lastupdate);
+              tempNode.updateDataFromDB(tempdb_nodeid, tempdb_xbeeaddr, tempdb_temperature, tempdb_destinationid, tempdb_votedcounter, tempdb_name, tempdb_lastupdate, tempdb_volume);
               break;
             }
           }
           if (foundFlag != true) {//not found insert new data
-            nodes.add(new Node(tempdb_nodeid, tempdb_xbeeaddr, tempdb_temperature, tempdb_destinationid, tempdb_votedcounter, tempdb_name, tempdb_lastupdate));
+            nodes.add(new Node(tempdb_nodeid, tempdb_xbeeaddr, tempdb_temperature, tempdb_destinationid, tempdb_votedcounter, tempdb_name, tempdb_lastupdate, tempdb_volume));
           }          //check we have the Node or not ===>
         }
       }
@@ -168,12 +131,12 @@ String updateAllDataFromDB(String tableName) {
   return drawTextStr;
 }
 
-void updateBroadcastFlagOnDB() {
+void updateBroadcastFlagOnDB(int angle) {
   connection = pgsql.connect();
   println("pgsql connection:" + connection);
   if (connection) {
     try {
-      pgsql.query("UPDATE flagtest SET value=1 WHERE flagid=1"); //here is very HARD CODED. of course, I tried WHERE flagtest.name=broadcastflag, but it did not work
+      pgsql.query("UPDATE flagtest SET value=1, angle=" + angle + " WHERE flagid=1"); //here is very HARD CODED. of course, I tried WHERE flagtest.name=broadcastflag, but it did not work
       println("update succeed");
     }        
     catch(Exception e) {

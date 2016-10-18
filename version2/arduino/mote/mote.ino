@@ -8,8 +8,8 @@
 */
 
 //<==== Please change according to an instruction
-String MOTENAME = "yourname"; //recommended to be between 1 ~ 10
-int MOTEID = 0; //should be from 1 ~ 20
+String MOTENAME = "volume"; //recommended to be between 1 ~ 10
+int MOTEID = 7; //should be from 1 ~ 20
 uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
 //====>Please change according to an instruction
 
@@ -20,6 +20,7 @@ Servo myservo;
 MyXBee myxbee;
 
 int oldButtonState;
+boolean receiveServoDataFlag = false;
 unsigned long serialPreviousMillis;    //loop serial print
 unsigned long receiveLedPreviousMillis;    //Receive LED
 unsigned long clickLedPreviousMillis;
@@ -31,7 +32,7 @@ unsigned long sendPastMillis = millis();
 #define SEND_INTERVAL 1000
 #endif
 
-//#define WITH_SERVO_FOLLOWING
+#define WITH_SERVO_FOLLOWING
 #ifdef WITH_SERVO_FOLLOWING
 int lastVolumeValue = 0;
 #endif
@@ -63,6 +64,10 @@ void setup() {
 void loop() { //loop
   if (millis() - receiveLedPreviousMillis >= RECEIVE_LED_ON_INTERVAL) digitalWrite(RECEIVE_LED_PIN, LOW);  //put off receive LED
   if (millis() - clickLedPreviousMillis >= CLICK_LED_ON_INTERVAL) digitalWrite(CLICK_LED_PIN, LOW);  //put off click LED
+  if (receiveServoDataFlag && millis() - servoPreviousMillis >= SERVO_ON_INTERVAL) {
+    receiveServoDataFlag = false;
+    digitalWrite(CLICK_LED_PIN, LOW);  //put off click LED
+  }
 
   //check receiving data
   myxbee.receiveXBeeData(myservo);
@@ -105,12 +110,14 @@ void loop() { //loop
 #endif
 
 #ifdef WITH_SERVO_FOLLOWING
-  int tempVolume = getVolume(VOLUME_PIN);
-  if (tempVolume != lastVolumeValue) {
-    lastVolumeValue = tempVolume;
-    int tempAngle = map(tempVolume, 0, 1023, 0, 165);
-    myservo.write((int)tempAngle);
-    delay(15);
+  if (!receiveServoDataFlag) {
+    int tempVolume = getVolume(VOLUME_PIN);
+    if (tempVolume != lastVolumeValue) {
+      lastVolumeValue = tempVolume;
+      int tempAngle = map(tempVolume, 0, 1023, 0, 165);
+      myservo.write((int)tempAngle);
+      delay(15);
+    }
   }
 #endif
 

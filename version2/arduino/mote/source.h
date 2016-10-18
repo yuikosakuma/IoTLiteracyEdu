@@ -19,8 +19,7 @@ extern uint32_t DEST_ADDR_LSB; // LSB of COODINATOR
 
 //variables
 extern int oldButtonState;
-extern int SWITCH_ARRAY_PIN[5];    //switch
-extern int switch_values[5];
+extern boolean receiveServoDataFlag;
 extern unsigned long serialPreviousMillis;    //loop serial print
 extern unsigned long receiveLedPreviousMillis;    //Receive LED
 extern unsigned long clickLedPreviousMillis;

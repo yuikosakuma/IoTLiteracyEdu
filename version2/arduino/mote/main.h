@@ -32,6 +32,6 @@
 
 //Servo
 #define SERVO_PIN 10
-#define SERVO_ON_INTERVAL 3000
+#define SERVO_ON_INTERVAL 5000
 
 #endif

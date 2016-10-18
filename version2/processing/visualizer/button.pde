@@ -80,7 +80,7 @@ void mouseClicked_dynamicButton() {
   for (DynamicButton tmpButton : dynamicButtons) {
     if (tmpButton.check(mouseX, mouseY)) {
       if (tmpButton.name == "button_space") {
-        updateBroadcastFlagOnDB();
+        updateBroadcastFlagOnDB(0);
       } else if (tmpButton.name == "button_R") { 
         refreshDB("connectiontest");
       } else if (tmpButton.name == "button_27") {

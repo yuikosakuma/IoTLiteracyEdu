@@ -11,6 +11,7 @@ class Node {
   int votedcounter;
   String name;
   String lastupdate;
+  int volume;
   YSFGraph ysfgraph;
 
   Node() {
@@ -23,9 +24,10 @@ class Node {
     votedcounter = 0;
     name = "";
     lastupdate = "";
+    volume = 0;
     ysfgraph = new YSFGraph();
   }
-  Node(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, String _lastupdate) {
+  Node(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, String _lastupdate, int _volume) {
     nodeid = _nodeid;
     xbeeaddr = _xbeeaddr;
     temperature = _temperature;
@@ -33,6 +35,7 @@ class Node {
     votedcounter = _votedcounter;
     name = _name;
     lastupdate = _lastupdate;
+    volume = _volume;
     ysfgraph = new YSFGraph();
   }
 
@@ -41,13 +44,14 @@ class Node {
     y = _y;
   }
 
-  void updateDataFromDB(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, String _lastupdate) {
+  void updateDataFromDB(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, String _lastupdate, int _volume) {
     nodeid = _nodeid;
     xbeeaddr = _xbeeaddr;
     temperature = _temperature;
     destinationid = _destinationid;
     votedcounter = _votedcounter;
     name = _name;
+    volume = _volume;
     try {
       if (!_lastupdate.equals(lastupdate)) ysfgraph.addValue(temperature); //add new value to graph only when new data is receved
     }
@@ -147,7 +151,7 @@ void nodes_display() {
     //cells by Niwacchi
     i = 0;    
     for (Node tempNode : nodes) {
-      displayCell(tempNode.nodeid, tempNode.temperature, tempNode.destinationid, tempNode.votedcounter, tempNode.name, 
+      displayCell(tempNode.nodeid, tempNode.temperature, tempNode.volume, tempNode.name, 
         (i % squareNumber) * cellWidth, 
         (i/ squareNumber) * cellHeight + cellHeight, 
         cellWidth, 

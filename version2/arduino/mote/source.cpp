@@ -72,6 +72,7 @@ void MyXBee::receiveXBeeData(Servo servo) {
         Serial.print("temp_angle: ");
         Serial.println(temp_angle);
         servoPreviousMillis = millis();
+        receiveServoDataFlag = true;
         servo.write(temp_angle); //          Serial.println(temp_angle);
       }
       else { //the packet is normal packet

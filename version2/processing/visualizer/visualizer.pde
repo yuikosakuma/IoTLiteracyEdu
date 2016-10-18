@@ -19,8 +19,6 @@ void draw() {
   int pastTime = millis();
   background(0);
 
-  calculateVoteOnDB("connectiontest");
-
   String flagtestStr = updateAllDataFromDB("flagtest");
   String connectiontestStr = updateAllDataFromDB("connectiontest");
 
@@ -62,7 +60,7 @@ void draw() {
 void keyPressed() {
   switch(key) {
   case ' ':
-    updateBroadcastFlagOnDB();
+    updateBroadcastFlagOnDB(0);
     break;
   case 'R':
     refreshDB("connectiontest");
@@ -74,6 +72,13 @@ void keyPressed() {
   case 's' :
     sortType++;
     if (sortType > 2) sortType = 0;
+    break;
+  case '1':
+  case '2':
+  case '3':
+  case '4':
+  case '5':
+    updateBroadcastFlagOnDB(key - '0');
     break;
   case 27:
     exit();

@@ -17,7 +17,7 @@ color selectColorBasedOnTemperature(float temp) {
   return c;
 }
 
-void displayCell(int ID, float Temp, int DstID, int voted, String name, float x, float y, float w, float h) {
+void displayCell(int ID, float Temp, int Volume, String name, float x, float y, float w, float h) {
   textAlign(LEFT);
   stroke(79, 0, 178);
   if (w/40<h/40)  strokeWeight(w/40);
@@ -37,44 +37,35 @@ void displayCell(int ID, float Temp, int DstID, int voted, String name, float x,
   fill(0, 0, 0, 0);
   rect(x, y, w, h);
 
+  //left window
   fill(0, 0, 0);
   textSize(tsize*2);
   text("Temp", x+w/3+w/20, y+3*h/10);
   textSize(tsize*2.5);
   text(nfc(Temp, 1), x+w/3+w/15, y+h*3/5);
-  for (int i=0; i<3; i++) {
-    fill(255, 255, 200);
-    rect(x, y+i*h/4, w/3, h/4);
-    fill(0, 0, 0);
-    textSize(tsize);
-    switch(i) {
-    case 0:
-      text("ID", x+w/40, y+h/10+i*h/4);
-      break;
-    case 1:
-      text("D", x+w/40, y+h/10+i*h/4);
-      break;
-    case 2:
-      text("V", x+w/40, y+h/10+i*h/4);
-      break;
-    default:
-      break;
-    }
-    textSize(tsize * 2.0);
-    switch(i) {
-    case 0:
-      text(ID, x+w/8, y+h/5+i*h/4);
-      break;
-    case 1:
-      text(DstID, x+w/8, y+h/5+i*h/4);
-      break;
-    case 2:
-      text(voted, x+w/8, y+h/5+i*h/4);
-      break;
-    default:
-      break;
-    }
-  }
+  fill(255, 255, 200);
+  rect(x, y+0*h/4, w/3, 3 * h/4);
+  rect(x, y+0*h/4, w/3, h/4);
+  fill(0, 0, 0);
+  textSize(tsize);
+  text("ID", x+w/40, y+h/10+0*h/4);
+  textSize(tsize * 2.0);
+  text(ID, x+w/8, y+h/5+0*h/4);
+
+  //volume
+  fill(255);
+  noStroke();
+  arc(x+w/6, y+11*h/16, w/3.5, w/3.5, radians(180), radians(360));
+
+  fill(0, 0, 0);
+  textSize(tsize);
+  text("Volume", x+w/40, y+h/10+1*h/4);
+  text(Volume, x+w/40, y+h/5+1*h/4);
+  float angle = map((float)Volume, 0, 1023, 0, 179);
+  stroke(79, 0, 178);
+  line(x+w/6, y+11*h/16, x+w/6 + cos(radians(angle + 180)) * w/7, y+11*h/16 + sin(radians(angle + 180)) * w/7);
+
+  //name window
   fill(255, 129, 25);
   rect(x, y+h*3/4, w, h/4);
   fill(255, 255, 255);
