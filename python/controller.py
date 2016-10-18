@@ -88,8 +88,8 @@ if __name__ == "__main__":
   
   #<=== Serial port initialization
   print "serial port initialization start"
-  # port = '/dev/ttyUSB0' #XBee Explorer via USB that is for raspberry pi
-  port = 'COM21' #XBee Explorer
+  port = '/dev/ttyUSB0' #XBee Explorer via USB that is for raspberry pi
+  #port = 'COM21' #XBee Explorer
   # port = 'COM17'
   serialPort = serial.Serial(port, 9600, timeout = 1)
   print port + " is opend"
