@@ -15,13 +15,13 @@ Programs are based on XMASS projects by TadaMatz.
 ##Preparation
 PostgreSQL must be installed. (Installation guide in Japanese: [http://www.dbonline.jp/postgresinstall/](http://www.dbonline.jp/postgresinstall/))  
 PostgreSQL Server should be configurated  
-Following 2 tables must be configurated.    
+Following 2 tables must be configurated. Please refer to ```sql/setup.sql``` also.    
 Install `psycopg2` for python.
 
 * connectiontest
-	- nodeid(Primary key, Integer), xbeeaddr(Integer), temperature(Numeric), destinationid(Integer), votedcounter(Integer), name(text), lastupdate(Timestamp without time zone), sendflag(Integer)
+	- nodeid(Primary key, Integer), xbeeaddr(Integer), temperature(Numeric), destinationid(Integer), votedcounter(Integer), name(text), lastupdate(Timestamp without time zone), sendflag(Integer), volume(Integer)
 * flagtest
-	- flagid(Primary key, Integer), name(Text), value(Integer)
+	- flagid(Primary key, Integer), name(Text), value(Integer), angle(Integer)
 
 SQL handling library for Processing needs Processing-2.2.1.  
 Updated!!(2016/10/6): I found the way to use BezierSQLib in Processing-3.2.1.  
@@ -56,15 +56,31 @@ Use XBee-Arduino library as "XBee" [https://github.com/andrewrapp/xbee-arduino](
 
 ##data packet payload
 UplinkHeader : 'U'  
-DownlinkHeader : 'D'  
+DownlinkHeader : 'D' 
 
-###Uplink : End device to Coodrinator
+version1 uses "dip switch array", version2 uses "volume" for application 
+
+###version1
+####Uplink : End device to Coodrinator
 Unicast to Coordinator  
 {UplinkHeader(1B,[0]), ID(1B,[1]), Temperature(4B,[2~5]), destinationID(1B,[6]), name(0 ~ 10B, [7~])} (7 ~ 17 bytes in total)  
 Temperature is multiplied by 10, in example, "25.3C" is sent like "0253". In the same way, "9.3C" is sent as "0093".
 
-###Downlink : Coordinator to End device
+####Downlink : Coordinator to End device
 Broadcast  
 {DownlinkHeader(1B,[0]), votedCounter for ID:1(1B,[1]), voteCounter for ID:2(1B,[2]), ... , votedCounter of ID:20(1B,[20])} (21 bytes in total)  
 Ex. "0123456789:;<=>?@ABC"  
 value = (int)id + '0' (0x48)
+
+###version2
+####Uplink : End device to Coodrinator
+Unicast to Coordinator  
+{UplinkHeader(1B,[0]), ID(1B,[1]), Temperature(4B,[2~5]), volume(4B,[6~9]), name(0 ~ 10B, [10~])} (10 ~ 20 bytes in total)  
+Temperature is multiplied by 10, in example, "25.3C" is sent like "0253". In the same way, "9.3C" is sent as "0093".
+Volume is supposed to have the raw value of analogRead() of Arduino (0 ~ 1024)
+
+####Downlink : Coordinator to End device
+Broadcast  
+{DownlinkHeader(1B,[0]), Angle(3B, [1~3]} (4 bytes in total)  
+Ex. "D104"  
+The value of angle should be from 0 ~ 179

@@ -6,7 +6,8 @@
   votedcounter INTEGER,
   name TEXT,
   lastupdate TIMESTAMP WITHOUT TIME ZONE,
-  sendflag INTEGER
+  sendflag INTEGER,
+  volume INTEGER
 );
 
 SELECT * FROM connectiontest;
@@ -14,7 +15,8 @@ SELECT * FROM connectiontest;
 CREATE TABLE flagtest(
   flagid INTEGER PRIMARY KEY,
   name TEXT,
-  value INTEGER
+  value INTEGER,
+  angle INTEGER,
 );
 
 SELECT * FROM flagtest;
