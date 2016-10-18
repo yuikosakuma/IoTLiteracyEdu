@@ -75,13 +75,12 @@ value = (int)id + '0' (0x48)
 ###version2
 ####Uplink : End device to Coodrinator
 Unicast to Coordinator  
-{UplinkHeader(1B,[0]), ID(1B,[1]), Temperature(4B,[2~5]), volume(4B,[6~9]), name(0 ~ 10B, [7~])} (7 ~ 17 bytes in total)  
+{UplinkHeader(1B,[0]), ID(1B,[1]), Temperature(4B,[2~5]), volume(4B,[6~9]), name(0 ~ 10B, [10~])} (10 ~ 20 bytes in total)  
 Temperature is multiplied by 10, in example, "25.3C" is sent like "0253". In the same way, "9.3C" is sent as "0093".
 Volume is supposed to have the raw value of analogRead() of Arduino (0 ~ 1024)
 
 ####Downlink : Coordinator to End device
 Broadcast  
-{DownlinkHeader(1B,[0]), votedCounter for ID:1(1B,[1]), voteCounter for ID:2(1B,[2]), ... , votedCounter of ID:20(1B,[20])} (21 bytes in total)  
-Ex. "0123456789:;<=>?@ABC"  
-value = (int)id + '0' (0x48)
-
+{DownlinkHeader(1B,[0]), Angle(3B, [1~3]} (4 bytes in total)  
+Ex. "D104"  
+The value of angle should be from 0 ~ 179

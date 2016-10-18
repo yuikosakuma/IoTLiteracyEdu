@@ -31,7 +31,7 @@ unsigned long sendPastMillis = millis();
 #define SEND_INTERVAL 1000
 #endif
 
-#define WITH_SERVO_FOLLOWING
+//#define WITH_SERVO_FOLLOWING
 #ifdef WITH_SERVO_FOLLOWING
 int lastVolumeValue = 0;
 #endif
@@ -63,7 +63,6 @@ void setup() {
 void loop() { //loop
   if (millis() - receiveLedPreviousMillis >= RECEIVE_LED_ON_INTERVAL) digitalWrite(RECEIVE_LED_PIN, LOW);  //put off receive LED
   if (millis() - clickLedPreviousMillis >= CLICK_LED_ON_INTERVAL) digitalWrite(CLICK_LED_PIN, LOW);  //put off click LED
-  //  if (millis() - servoPreviousMillis >= SERVO_ON_INTERVAL) myservo.write(0);  //make servo default
 
   //check receiving data
   myxbee.receiveXBeeData(myservo);
