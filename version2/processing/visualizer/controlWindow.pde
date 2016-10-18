@@ -1,3 +1,5 @@
+//totally based on http://3846masa.blog.jp/archives/1038375725.html
+
 SecondApplet second;
 
 class SecondApplet extends PApplet {
@@ -27,7 +29,7 @@ class SecondApplet extends PApplet {
     catch (Exception ex) {
       ex.printStackTrace();
     }
-    
+
     PSurface surface = super.initSurface();
     surface.placeWindow(new int[]{0, 0}, new int[]{0, 0});
     surface.setTitle("Control Window");
@@ -50,9 +52,11 @@ class SecondApplet extends PApplet {
     //***** If LED BUTTON IS PUSHED *****
     if (flag_on == 1) {
       //api_send_LED();
+      updateBroadcastFlagOnDB(1, 0, 1);
       flag_on = 0;
     } else if (flag_off == 1) {
       //api_send_LED();
+      updateBroadcastFlagOnDB(1, 0, 0);
       flag_off = 0;
     }
 
@@ -171,10 +175,10 @@ class SecondApplet extends PApplet {
     if (-PI <= theta && theta <= 0)
     {
       float temp = degrees(theta) + 180;
-      int tx = (int)temp;
+      int tempAngle = (int)temp;
       //***** Broadcast Data *****
-      println(tx);
-      updateBroadcastFlagOnDB(tx);
+      println("instruceted angle: " + tempAngle);
+      updateBroadcastFlagOnDB(2, tempAngle, 0);
       //api_send(tx);
     }
   }
@@ -193,8 +197,7 @@ class SecondApplet extends PApplet {
   //***** Check if Over Rect *****
   boolean overServo() 
   {
-    if (mouseX >= 0 && mouseX <= 600 && 
-      mouseY >= 0 && mouseY <= 600) {
+    if (0 <= mouseX && mouseX <= width && 0 <= mouseY && mouseY <= height*3/4) {
       return true;
     } else {
       return false;

@@ -21,6 +21,7 @@ MyXBee myxbee;
 
 int oldButtonState;
 boolean receiveServoDataFlag = false;
+int receiveLedState = 0;
 unsigned long serialPreviousMillis;    //loop serial print
 unsigned long receiveLedPreviousMillis;    //Receive LED
 unsigned long clickLedPreviousMillis;
@@ -32,6 +33,7 @@ unsigned long sendPastMillis = millis();
 #define SEND_INTERVAL 1000
 #endif
 
+int currentAngle = 0;
 #define WITH_SERVO_FOLLOWING
 #ifdef WITH_SERVO_FOLLOWING
 int lastVolumeValue = 0;
@@ -41,7 +43,7 @@ void setup() {
   Serial.begin(9600);
 
   serialPreviousMillis = millis();
-  receiveLedPreviousMillis = millis();
+  //  receiveLedPreviousMillis = millis();
   clickLedPreviousMillis = millis();
   servoPreviousMillis = millis();
 
@@ -62,7 +64,9 @@ void setup() {
 }
 
 void loop() { //loop
-  if (millis() - receiveLedPreviousMillis >= RECEIVE_LED_ON_INTERVAL) digitalWrite(RECEIVE_LED_PIN, LOW);  //put off receive LED
+  //  if (millis() - receiveLedPreviousMillis >= RECEIVE_LED_ON_INTERVAL) digitalWrite(RECEIVE_LED_PIN, LOW);  //put off receive LED
+  digitalWrite(RECEIVE_LED_PIN, receiveLedState);
+
   if (millis() - clickLedPreviousMillis >= CLICK_LED_ON_INTERVAL) digitalWrite(CLICK_LED_PIN, LOW);  //put off click LED
   if (receiveServoDataFlag && millis() - servoPreviousMillis >= SERVO_ON_INTERVAL) {
     receiveServoDataFlag = false;
@@ -114,8 +118,8 @@ void loop() { //loop
     int tempVolume = getVolume(VOLUME_PIN);
     if (tempVolume != lastVolumeValue) {
       lastVolumeValue = tempVolume;
-      int tempAngle = map(tempVolume, 0, 1023, 0, 165);
-      myservo.write((int)tempAngle);
+      currentAngle = (int)map(tempVolume, 0, 1023, 0, 165);
+      myservo.write(currentAngle);
       delay(15);
     }
   }

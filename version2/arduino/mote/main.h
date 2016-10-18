@@ -22,6 +22,8 @@
 #define ID_PACKET_OFFSET '0'
 #define UPLINK_HEADER 'U'
 #define DOWNLINK_HEADER 'D'
+#define LED_INSTRUCTION 'L'
+#define SERVO_INSTRUCTION 'S'
 
 //temperature sensor
 #define TEMP_SENSOR_PIN A0

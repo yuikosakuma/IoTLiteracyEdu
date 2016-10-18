@@ -14,6 +14,8 @@ import random
 ID_PACKET_OFFSET = '0'
 UPLINK_HEADER = 'U'
 DOWNLINK_HEADER = 'D'
+LED_INSTRUCTION = 'L'
+SERVO_INSTRUCTION = 'S'
 
 def readSerial(ser): #can process the Escape mode API = 2
     var = ord(ser.read())
@@ -182,30 +184,29 @@ if __name__ == "__main__":
 
       #<=== broadcast packet sending
       cur = conn.cursor()
-      cur.execute("SELECT value FROM flagtest WHERE name=%s", ["broadcastflag"])
-      tmp_value = cur.fetchone()[0]
+      cur.execute("SELECT * FROM flagtest WHERE name=%s", ["broadcastflag"])
+      fetchedData = cur.fetchone()
       conn.commit()
       cur.close()
-      if tmp_value == 1: #clicked
+      tmp_value = fetchedData[2]
+      tmp_angle = fetchedData[3]
+      tmp_led = fetchedData[4]
+      if not tmp_value == 0: 
         print "triger to send broadcast packet!!"
         cur = conn.cursor()
         cur.execute("UPDATE flagtest SET value=%s WHERE flagtest.name=%s", [0, "broadcastflag"])
         conn.commit()
         cur.close()
 
-        #broadcast packet sending
-        cur = conn.cursor()
-        cur.execute("SELECT angle FROM flagtest WHERE flagtest.name=%s", ["broadcastflag"])
-        angle_result = cur.fetchone()[0]
-        conn.commit()
-        cur.close()  
-
         broadcast_packet_str = "" + DOWNLINK_HEADER
-        #print broadcast_packet_str
-        #print angle_result
-        broadcast_packet_str += "{0:03d}".format(angle_result)
-        print broadcast_packet_str
+        if tmp_value == 1: #sending Led packet
+        	broadcast_packet_str += LED_INSTRUCTION
+        	broadcast_packet_str += str(tmp_led)
+	    elif tmp_value == 2: #sending Servo packet\
+	        broadcast_packet_str += SERVO_INSTRUCTION
+	        broadcast_packet_str += "{0:03d}".format(tmp_angle)
 
+        print broadcast_packet_str
         temp = makeZigBeeTransmitRequestPacket(0x00000000, 0x0000FFFF, 0xFFFE, broadcast_packet_str)
         serialPort.write(temp)
         time.sleep(1)

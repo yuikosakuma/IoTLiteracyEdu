@@ -131,12 +131,12 @@ String updateAllDataFromDB(String tableName) {
   return drawTextStr;
 }
 
-void updateBroadcastFlagOnDB(int angle) {
+void updateBroadcastFlagOnDB(int value, int angle, int led) { //value=1 for Led instruction, 2 for Servo instruction
   connection = pgsql.connect();
   println("pgsql connection:" + connection);
   if (connection) {
     try {
-      pgsql.query("UPDATE flagtest SET value=1, angle=" + angle + " WHERE flagid=1"); //here is very HARD CODED. of course, I tried WHERE flagtest.name=broadcastflag, but it did not work
+      pgsql.query("UPDATE flagtest SET value=" + value + ", angle=" + angle + ", led=" + led + " WHERE flagid=1"); //here is very HARD CODED. of course, I tried WHERE flagtest.name=broadcastflag, but it did not work
       println("update succeed");
     }        
     catch(Exception e) {

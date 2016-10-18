@@ -39,9 +39,9 @@ void MyXBee::receiveXBeeData(Servo servo) {
     if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {      // got a zb rx packet
       //      Serial.print("got zb rx packet >>> ");
 
-      //put on receive LED
-      digitalWrite(RECEIVE_LED_PIN, HIGH);
-      receiveLedPreviousMillis = millis();
+      //      //put on receive LED
+      //      digitalWrite(RECEIVE_LED_PIN, HIGH);
+      //      receiveLedPreviousMillis = millis();
 
       // now fill our zb rx class
       xbee.getResponse().getZBRxResponse(rx);
@@ -66,14 +66,23 @@ void MyXBee::receiveXBeeData(Servo servo) {
       uint8_t payloadType = receivePayload[0]; //judge whether the packet is hopping packet or not
       if (payloadType == DOWNLINK_HEADER) {
         Serial.println(F("This packet is from Coordinator"));
-        //here shake servo motor
-        int temp_angle = 0;
-        temp_angle = ((int)receivePayload[1] - '0') * 100 + ((int)receivePayload[2] - '0') * 10 + ((int)receivePayload[3] - '0') * 1;
-        Serial.print("temp_angle: ");
-        Serial.println(temp_angle);
-        servoPreviousMillis = millis();
-        receiveServoDataFlag = true;
-        servo.write(temp_angle); //          Serial.println(temp_angle);
+        switch (receivePayload[1]) {
+          case LED_INSTRUCTION:
+            receiveLedState = (int)receivePayload[2] - '0';
+            break;
+          case SERVO_INSTRUCTION:
+            //here shake servo motor
+            currentAngle = ((int)receivePayload[2] - '0') * 100 + ((int)receivePayload[3] - '0') * 10 + ((int)receivePayload[4] - '0') * 1;
+            Serial.print("currentAngle: ");
+            Serial.println(currentAngle);
+            servoPreviousMillis = millis();
+            receiveServoDataFlag = true;
+            servo.write(currentAngle);
+            delay(15);
+            break;
+          default:
+            break;
+        }
       }
       else { //the packet is normal packet
         Serial.println(F("got normal packet"));

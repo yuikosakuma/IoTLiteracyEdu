@@ -17,6 +17,7 @@ CREATE TABLE flagtest(
   name TEXT,
   value INTEGER,
   angle INTEGER,
+  led INTEGER
 );
 
 SELECT * FROM flagtest;
