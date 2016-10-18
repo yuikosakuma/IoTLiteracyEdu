@@ -27,6 +27,9 @@
 #define TEMP_SENSOR_PIN A0
 #define SERIESRESISTOR 10000
 
+//volume
+#define VOLUME_PIN A1
+
 //Servo
 #define SERVO_PIN 10
 #define SERVO_ON_INTERVAL 3000

@@ -3,6 +3,8 @@
    Program for Arduino
    Keio University Westlab 2016.10
    Author: Tada Matz
+
+   this is version2 which uses Volume instead of dip swtich array
 */
 
 //<==== Please change according to an instruction
@@ -18,17 +20,20 @@ Servo myservo;
 MyXBee myxbee;
 
 int oldButtonState;
-int SWITCH_ARRAY_PIN[5];    //switch
-int switch_values[5];
 unsigned long serialPreviousMillis;    //loop serial print
 unsigned long receiveLedPreviousMillis;    //Receive LED
 unsigned long clickLedPreviousMillis;
 unsigned long servoPreviousMillis;
 
-//#define WITH_PERIODIC
+#define WITH_PERIODIC
 #ifdef WITH_PERIODIC
 unsigned long sendPastMillis = millis();
 #define SEND_INTERVAL 1000
+#endif
+
+#define WITH_SERVO_FOLLOWING
+#ifdef WITH_SERVO_FOLLOWING
+int lastVolumeValue = 0;
 #endif
 
 void setup() {
@@ -40,9 +45,6 @@ void setup() {
   servoPreviousMillis = millis();
 
   oldButtonState = 0;
-  int tempArray[] = {8, 7, 6, 5, 4};
-  for (int i = 0; i < 5; i++) SWITCH_ARRAY_PIN[i] = tempArray[i];
-  for (int i = 0; i < 5; i++) switch_values[i] = 0;
 
   pinMode(RECEIVE_LED_PIN, OUTPUT);
   digitalWrite(RECEIVE_LED_PIN, HIGH);
@@ -51,9 +53,8 @@ void setup() {
   digitalWrite(CLICK_LED_PIN, HIGH);
 
   pinMode(BUTTON_PIN, INPUT_PULLUP);
-  for (int i = 0; i < 5; i++) pinMode(SWITCH_ARRAY_PIN[i], INPUT_PULLUP);
 
-  myservo.attach(SERVO_PIN, 550, 2000); //attach(pin number(must be PWM pin), MIN pulse width, MAX pulse width)
+  myservo.attach(SERVO_PIN); //attach(pin number(must be PWM pin), MIN pulse width, MAX pulse width)
   myservo.write(0);
 
   myxbee.init();
@@ -62,40 +63,55 @@ void setup() {
 void loop() { //loop
   if (millis() - receiveLedPreviousMillis >= RECEIVE_LED_ON_INTERVAL) digitalWrite(RECEIVE_LED_PIN, LOW);  //put off receive LED
   if (millis() - clickLedPreviousMillis >= CLICK_LED_ON_INTERVAL) digitalWrite(CLICK_LED_PIN, LOW);  //put off click LED
-  if (millis() - servoPreviousMillis >= SERVO_ON_INTERVAL) myservo.write(0);  //make servo default
+  //  if (millis() - servoPreviousMillis >= SERVO_ON_INTERVAL) myservo.write(0);  //make servo default
 
   //check receiving data
   myxbee.receiveXBeeData(myservo);
 
   //sending data
   if (clickDetection() == 1) {
-    int valueFromSwitches = getValueFromSwitches();
+    Serial.println(F("Button clicked"));
     float tempTemperature = getTemperature(TEMP_SENSOR_PIN);
-    char tempStr[1 + 1 + 4 + 1];
-    sprintf(tempStr, "%c%c%04d%c",
+    int tempVolume = getVolume(VOLUME_PIN);
+    char tempStr[1 + 1 + 4 + 4];
+    sprintf(tempStr, "%c%c%04d%04d",
             UPLINK_HEADER,
             MOTEID + int(ID_PACKET_OFFSET),
             int(tempTemperature * 10),
-            valueFromSwitches + int(ID_PACKET_OFFSET));
+            tempVolume);
     String temppayload = "";
     temppayload += tempStr + MOTENAME + "\n";
     myxbee.sendXBeeData(temppayload);
+    Serial.print("temppayload: ");
+    Serial.print(temppayload);
   }
 
 #ifdef WITH_PERIODIC
   if (millis() - sendPastMillis > SEND_INTERVAL) {
     sendPastMillis += SEND_INTERVAL;
-    int valueFromSwitches = getValueFromSwitches();
     float tempTemperature = getTemperature(TEMP_SENSOR_PIN);
-    char tempStr[1 + 1 + 4 + 1];
-    sprintf(tempStr, "%c%c%04d%c",
+    int tempVolume = getVolume(VOLUME_PIN);
+    char tempStr[1 + 1 + 4 + 4];
+    sprintf(tempStr, "%c%c%04d%04d",
             UPLINK_HEADER,
             MOTEID + int(ID_PACKET_OFFSET),
             int(tempTemperature * 10),
-            valueFromSwitches + int(ID_PACKET_OFFSET));
+            tempVolume);
     String temppayload = "";
     temppayload += tempStr + MOTENAME + "\n";
     myxbee.sendXBeeData(temppayload);
+    Serial.print("temppayload: ");
+    Serial.print(temppayload);
+  }
+#endif
+
+#ifdef WITH_SERVO_FOLLOWING
+  int tempVolume = getVolume(VOLUME_PIN);
+  if (tempVolume != lastVolumeValue) {
+    lastVolumeValue = tempVolume;
+    int tempAngle = map(tempVolume, 0, 1023, 0, 165);
+    myservo.write((int)tempAngle);
+    delay(15);
   }
 #endif
 
@@ -111,28 +127,12 @@ int clickDetection() { //click detection
   int newButtonState = digitalRead(BUTTON_PIN);
   if (oldButtonState == HIGH && newButtonState == LOW) { //button pressed. CAUTION pull up
     buttonClicked = 1;
-    Serial.println(F("Button clicked"));
     //put on click LED
     digitalWrite(CLICK_LED_PIN, HIGH);
     clickLedPreviousMillis = millis();
   }
   oldButtonState = newButtonState;
   return buttonClicked;
-}
-
-int getValueFromSwitches() { //get value from switches
-  Serial.print(F("switch_values: "));
-  int value_from_switches = 0;
-  for (int i = 0; i < 5; i++) {
-    switch_values[i] = digitalRead(SWITCH_ARRAY_PIN[i]);
-    if (switch_values[i] == LOW) value_from_switches += (1 << i); //switched
-    Serial.print(switch_values[i]);
-    Serial.print(",");
-  }
-  Serial.print(F("value_from_swtches: "));
-  Serial.print(value_from_switches);
-  Serial.println("");
-  return value_from_switches;
 }
 
 float getTemperature(int pin) { //Measure temperature, origined from Bob-san's program
@@ -142,3 +142,9 @@ float getTemperature(int pin) { //Measure temperature, origined from Bob-san's p
   float temp = (1 / (0.00096564 + (0.00021068 * log(res) ) + (0.000000085826 * ( pow( log(res) , 3))))) - 273.15;
   return temp;
 }
+
+int getVolume(int pin) { //measure volume value through analog pin
+  return analogRead(pin);
+}
+
+
