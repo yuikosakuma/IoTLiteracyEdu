@@ -1,7 +1,5 @@
 ArrayList<Node> nodes;
 
-int positionType = 4;
-
 class Node {
   float x, y;
   int nodeid;

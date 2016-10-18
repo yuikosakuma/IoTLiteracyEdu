@@ -8,12 +8,19 @@ class SecondApplet extends PApplet {
   int LEDstate = 0;
   float theta = -PI;
   boolean servo_locked = true;
-  int flag_on = 0;
-  int flag_off = 0;
-  boolean ONrectOver = false;
-  boolean OFFrectOver = false;
   boolean servoOver = false;
   PImage img;
+
+  float center_x = 0;
+  float center_y = 0;
+
+  float ONrectX = 0; //145;      //Rect X Position
+  float ONrectY = 0; //600;      //Rect Y Position
+  float ONrectSize = 0; //50;    //Rect Size
+
+  float OFFrectX = 0; //305;      //Rect X Position
+  float OFFrectY = 0;      //Rect Y Position
+  float OFFrectSize = 0;    //Rect Size
 
   SecondApplet(PApplet _parent) {
     super();
@@ -49,57 +56,30 @@ class SecondApplet extends PApplet {
   }
 
   void draw() {
-    //***** If LED BUTTON IS PUSHED *****
-    if (flag_on == 1) {
-      //api_send_LED();
-      updateBroadcastFlagOnDB(1, 0, 1);
-      flag_on = 0;
-    } else if (flag_off == 1) {
-      //api_send_LED();
-      updateBroadcastFlagOnDB(1, 0, 0);
-      flag_off = 0;
-    }
-
     updatedisplay();
   }
 
   void updatedisplay() {  
     float w = (float)width;
     float h = (float)height;
-    float center_x = w/2;
-    float center_y = h*3/8;
     float r = w/4;
     float d2 = w/40;
     float end_x = 0.0;
     float end_y = 0.0;
 
-    float ONrectX = w*29/120; //145;      //Rect X Position
-    float ONrectY = h*3/4; //600;      //Rect Y Position
-    float ONrectSize = w/12; //50;    //Rect Size
+    center_x = w/2;
+    center_y = h*3/8;
 
-    float OFFrectX = w*61/120; //305;      //Rect X Position
-    float OFFrectY = h*3/4;      //Rect Y Position
-    float OFFrectSize = w/12;    //Rect Size
+    ONrectX = w*29/120; //145;      //Rect X Position
+    ONrectY = h*3/4; //600;      //Rect Y Position
+    ONrectSize = w/12; //50;    //Rect Size
 
-    //***** If Unservo_locked, Update Position *****
-    if (servo_locked == false) {
-      float theta_tmp = atan2(mouseY - center_y, mouseX - center_x);
-      if (-PI <= theta_tmp && theta_tmp <= 0) theta = theta_tmp;
-    }
+    OFFrectX = w*61/120; //305;      //Rect X Position
+    OFFrectY = h*3/4;      //Rect Y Position
+    OFFrectSize = w/12;    //Rect Size
+
     end_x = cos(theta) *  r + center_x;
     end_y = sin(theta) * r + center_y;
-
-    if (overRect(ONrectX, ONrectY, ONrectSize*3, ONrectSize) ) {
-      ONrectOver = true;
-    } else {
-      ONrectOver = false;
-    }
-
-    if (overRect(OFFrectX, OFFrectY, OFFrectSize*3, OFFrectSize) ) {
-      OFFrectOver = true;
-    } else {
-      OFFrectOver = false;
-    }
 
     background(255);
     if (img != null) image(img, 0, 0, w, h*3/4);
@@ -150,44 +130,35 @@ class SecondApplet extends PApplet {
 
   void mousePressed()
   {
-    if ( overServo() ) {
-      //***** Unlock Position *****
-      servo_locked = false;
+    if (overServo()) {
+      //***** Calculate Angle *****
+      //***** If Unservo_locked, Update Position *****
+      float theta_tmp = atan2(mouseY - center_y, mouseX - center_x);
+      if (-PI <= theta_tmp && theta_tmp <= 0) { 
+        theta = theta_tmp;
+        float temp = degrees(theta) + 180;
+        int tempAngle = (int)temp;
+        //***** Broadcast Data *****
+        println("instruceted angle: " + tempAngle);
+        updateBroadcastFlagOnDB(2, tempAngle, 0);
+        //api_send(tx);
+      }
     }
 
-    if (ONrectOver) {
-      flag_on = 1;
+    if (overRect(ONrectX, ONrectY, ONrectSize*3, ONrectSize) ) {
       LEDstate = 1;
+      updateBroadcastFlagOnDB(1, 0, 1);
     }
-    if (OFFrectOver) {
-      flag_off = 1;
+    if (overRect(OFFrectX, OFFrectY, OFFrectSize*3, OFFrectSize)) {
       LEDstate = 0;
-    }
-  }
-
-  void mouseReleased()
-  {
-
-    //***** Lock Position *****
-    servo_locked = true;
-
-    //***** Calculate Angle *****
-    if (-PI <= theta && theta <= 0)
-    {
-      float temp = degrees(theta) + 180;
-      int tempAngle = (int)temp;
-      //***** Broadcast Data *****
-      println("instruceted angle: " + tempAngle);
-      updateBroadcastFlagOnDB(2, tempAngle, 0);
-      //api_send(tx);
+      updateBroadcastFlagOnDB(1, 0, 0);
     }
   }
 
   //***** Check if Over Rect *****
-  boolean overRect(float x, float y, float width, float height) 
+  boolean overRect(float x, float y, float w, float h) 
   {
-    if (mouseX >= x && mouseX <= x+width && 
-      mouseY >= y && mouseY <= y+height) {
+    if (x <= mouseX && mouseX <= x+w &&  y <= mouseY && mouseY <= y+h) {
       return true;
     } else {
       return false;

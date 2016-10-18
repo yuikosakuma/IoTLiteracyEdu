@@ -1,4 +1,5 @@
-int pastTime = millis(); 
+int sortType = 0;
+int positionType = 4;
 
 void settings() {
   size(1200, 800);
@@ -27,14 +28,14 @@ void draw() {
   String flagtestStr = updateAllDataFromDB("flagtest");
   String connectiontestStr = updateAllDataFromDB("connectiontest");
 
-  ////display DB in Table looks <====
-  //  textAlign(LEFT);
-  //  textSize(height / 30);
-  //  fill(255, 100);
-  //  text(flagtestStr, 0* width/3 +10, 60);
-  //  text(connectiontestStr, 1 * width/3 +10, 60);
-  //  noFill();
-  ////====> display DB in Table looks
+  //display DB in Table looks <====
+  textAlign(LEFT);
+  textSize(height / 30);
+  fill(255, 100);
+  text(flagtestStr, 0* width/3 +10, 60);
+  text(connectiontestStr, 1 * width/3 +10, 60);
+  noFill();
+  //====> display DB in Table looks
 
   changeSortType();
 

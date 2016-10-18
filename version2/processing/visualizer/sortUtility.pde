@@ -1,5 +1,3 @@
-int sortType = 0;
-
 public class NodeComparatorByNodeid implements Comparator<Node> { 
   @Override public int compare(Node p1, Node p2) { 
     return p1.nodeid < p2.nodeid ? -1 : 1;

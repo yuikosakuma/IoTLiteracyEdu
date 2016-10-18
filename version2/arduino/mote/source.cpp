@@ -69,11 +69,13 @@ void MyXBee::receiveXBeeData(Servo servo) {
         switch (receivePayload[1]) {
           case LED_INSTRUCTION:
             receiveLedState = (int)receivePayload[2] - '0';
+            Serial.print(F("changed receiveLedState to "));
+            Serial.println(receiveLedState);
             break;
           case SERVO_INSTRUCTION:
             //here shake servo motor
             currentAngle = ((int)receivePayload[2] - '0') * 100 + ((int)receivePayload[3] - '0') * 10 + ((int)receivePayload[4] - '0') * 1;
-            Serial.print("currentAngle: ");
+            Serial.print("changed currentAngle to ");
             Serial.println(currentAngle);
             servoPreviousMillis = millis();
             receiveServoDataFlag = true;

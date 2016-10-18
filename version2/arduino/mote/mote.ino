@@ -8,7 +8,7 @@
 */
 
 //<==== Please change according to an instruction
-String MOTENAME = "volume"; //recommended to be between 1 ~ 10
+String MOTENAME = "testman"; //recommended to be between 1 ~ 10
 int MOTEID = 7; //should be from 1 ~ 20
 uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
 //====>Please change according to an instruction
