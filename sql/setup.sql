@@ -6,7 +6,8 @@
   votedcounter INTEGER,
   name TEXT,
   lastupdate TIMESTAMP WITHOUT TIME ZONE,
-  sendflag INTEGER
+  sendflag INTEGER,
+  volume INTEGER
 );
 
 SELECT * FROM connectiontest;
