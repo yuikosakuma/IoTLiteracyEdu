@@ -202,7 +202,7 @@ if __name__ == "__main__":
         if tmp_value == 1: #sending Led packet
         	broadcast_packet_str += LED_INSTRUCTION
         	broadcast_packet_str += str(tmp_led)
-	    elif tmp_value == 2: #sending Servo packet\
+        elif tmp_value == 2: #sending Servo packet
 	        broadcast_packet_str += SERVO_INSTRUCTION
 	        broadcast_packet_str += "{0:03d}".format(tmp_angle)
 
