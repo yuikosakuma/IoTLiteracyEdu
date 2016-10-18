@@ -8,8 +8,8 @@
 */
 
 //<==== Please change according to an instruction
-String MOTENAME = "testman"; //recommended to be between 1 ~ 10
-int MOTEID = 7; //should be from 1 ~ 20
+String MOTENAME = "yourname"; //recommended to be between 1 ~ 10
+int MOTEID = 0; //should be from 1 ~ 20
 uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
 //====>Please change according to an instruction
 
@@ -23,7 +23,7 @@ int oldButtonState;
 boolean receiveServoDataFlag = false;
 int receiveLedState = 0;
 unsigned long serialPreviousMillis;    //loop serial print
-unsigned long receiveLedPreviousMillis;    //Receive LED
+//unsigned long receiveLedPreviousMillis;    //Receive LED
 unsigned long clickLedPreviousMillis;
 unsigned long servoPreviousMillis;
 
