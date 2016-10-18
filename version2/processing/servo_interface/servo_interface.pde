@@ -100,7 +100,7 @@ void updatedisplay() {
   ellipse(w/2, h*7/8, w/12, w/12);//  ellipse(300, 700, 50, 50);
 
   //***** Draw LED Switch Image
-  if (LEDstate == 1) fill(0, 0, 255);
+  if (LEDstate == 1) fill(255, 0, 0);
   else fill(200);
   rect(ONrectX, ONrectY, ONrectSize*3, ONrectSize);
   if (LEDstate == 0) fill(0, 0, 255);

@@ -1,18 +1,23 @@
 int pastTime = millis(); 
 
-void setup() {
-  //  fullScreen();
-
+void settings() {
   size(1200, 800);
+  //  fullScreen();
   //size(800, 600);
   //size(320, 240);
-  //frame.setResizable(true); //for proceesing-2
+}
+
+void setup() {
   surface.setResizable(true); //for processing-3
+  surface.setTitle("Visualizer");
+
   init_db();
-
   init_dynamicButton();
-
   nodes_init();
+
+  //for second window
+  second = new SecondApplet(this);
+  second.img = loadImage("servo_bg.png");
 }
 
 void draw() {
