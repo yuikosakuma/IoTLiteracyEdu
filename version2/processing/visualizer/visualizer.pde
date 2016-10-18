@@ -78,7 +78,7 @@ void keyPressed() {
   case '3':
   case '4':
   case '5':
-    updateBroadcastFlagOnDB(key - '0');
+    updateBroadcastFlagOnDB((key - '0') * 30);
     break;
   case 27:
     exit();
