@@ -88,9 +88,8 @@ if __name__ == "__main__":
   
   #<=== Serial port initialization
   print "serial port initialization start"
-  # port = '/dev/ttyUSB0' #XBee Explorer via USB that is for raspberry pi
-  port = 'COM21' #XBee Explorer
-  # port = 'COM17'
+  port = '/dev/ttyUSB0' #XBee Explorer via USB that is for raspberry pi
+  # port = 'COM21' #XBee Explorer
   serialPort = serial.Serial(port, 9600, timeout = 1)
   print port + " is opend"
   time.sleep(2) #wait for establishing stable serial connection
@@ -176,7 +175,7 @@ if __name__ == "__main__":
               #update database
               cur = conn.cursor()
               cur.execute("UPDATE connectiontest SET temperature=%s, volume=%s, xbeeaddr=%s, name=%s, lastupdate=%s WHERE connectiontest.nodeid=%s", \
-                [tmp_temperature, tmp_dst_id, src64addrL, tmp_name_str.strip(), datetime.datetime.utcnow(), tmp_id])
+                [tmp_temperature, tmp_volume, src64addrL, tmp_name_str.strip(), datetime.datetime.utcnow(), tmp_id])
               conn.commit()
               cur.close()
       #===> packet receiving
