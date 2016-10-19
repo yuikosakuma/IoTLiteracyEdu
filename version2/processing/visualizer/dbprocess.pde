@@ -14,8 +14,8 @@ void init_db() {
   String pass     = "mypgsql";
   String database = "iotedu";
 
-  //pgsql = new PostgreSQL(this, "localhost", database, user, pass );
-  pgsql = new PostgreSQL(this, "10.24.129.183", database, user, pass );
+  pgsql = new PostgreSQL(this, "localhost", database, user, pass );
+  //pgsql = new PostgreSQL(this, "10.24.129.183", database, user, pass );
 
   connection = pgsql.connect();
   println("pgsql connection:" + connection);
