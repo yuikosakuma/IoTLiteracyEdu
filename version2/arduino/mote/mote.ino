@@ -1,16 +1,12 @@
-/*
-   mote.ino
-   Program for Arduino
-   Keio University Westlab 2016.10
-   Author: Tada Matz
-
-   this is version2 which uses Volume instead of dip swtich array
-*/
+// mote.ino
+// Program for Arduino version2
+// Keio University Westlab 2016.10
+// Author: Tada Matz
 
 //<==== Please change according to an instruction
 String MOTENAME = "yourname"; //recommended to be between 1 ~ 10
 int MOTEID = 0; //should be from 1 ~ 20
-uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
+uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of XBee Coordinator Address
 //====>Please change according to an instruction
 
 #include "XBee.h"
@@ -18,12 +14,10 @@ uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of COODINATOR
 
 Servo myservo;
 MyXBee myxbee;
-
-int oldButtonState;
+int oldButtonState = 0;
 boolean receiveServoDataFlag = false;
 int receiveLedState = 0;
 unsigned long serialPreviousMillis;    //loop serial print
-//unsigned long receiveLedPreviousMillis;    //Receive LED
 unsigned long clickLedPreviousMillis;
 unsigned long servoPreviousMillis;
 
@@ -43,18 +37,13 @@ void setup() {
   Serial.begin(9600);
 
   serialPreviousMillis = millis();
-  //  receiveLedPreviousMillis = millis();
   clickLedPreviousMillis = millis();
   servoPreviousMillis = millis();
 
-  oldButtonState = 0;
-
   pinMode(RECEIVE_LED_PIN, OUTPUT);
   digitalWrite(RECEIVE_LED_PIN, HIGH);
-
   pinMode(CLICK_LED_PIN, OUTPUT);
   digitalWrite(CLICK_LED_PIN, HIGH);
-
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
   myservo.attach(SERVO_PIN); //attach(pin number(must be PWM pin), MIN pulse width, MAX pulse width)
@@ -64,7 +53,6 @@ void setup() {
 }
 
 void loop() { //loop
-  //  if (millis() - receiveLedPreviousMillis >= RECEIVE_LED_ON_INTERVAL) digitalWrite(RECEIVE_LED_PIN, LOW);  //put off receive LED
   digitalWrite(RECEIVE_LED_PIN, receiveLedState);
 
   if (millis() - clickLedPreviousMillis >= CLICK_LED_ON_INTERVAL) digitalWrite(CLICK_LED_PIN, LOW);  //put off click LED
@@ -79,6 +67,8 @@ void loop() { //loop
   //sending data
   if (clickDetection() == 1) {
     Serial.println(F("Button clicked"));
+    digitalWrite(CLICK_LED_PIN, HIGH);
+    clickLedPreviousMillis = millis();
     float tempTemperature = getTemperature(TEMP_SENSOR_PIN);
     int tempVolume = getVolume(VOLUME_PIN);
     char tempStr[1 + 1 + 4 + 4];
@@ -125,8 +115,7 @@ void loop() { //loop
   }
 #endif
 
-  //loop seconds
-  if (millis() - serialPreviousMillis > 1000) {
+  if (millis() - serialPreviousMillis > 1000) {  //loop seconds
     serialPreviousMillis += 1000;
     Serial.println(F("in a loop"));
   }
@@ -135,12 +124,7 @@ void loop() { //loop
 int clickDetection() { //click detection
   int buttonClicked = 0;
   int newButtonState = digitalRead(BUTTON_PIN);
-  if (oldButtonState == HIGH && newButtonState == LOW) { //button pressed. CAUTION pull up
-    buttonClicked = 1;
-    //put on click LED
-    digitalWrite(CLICK_LED_PIN, HIGH);
-    clickLedPreviousMillis = millis();
-  }
+  if (oldButtonState == HIGH && newButtonState == LOW) buttonClicked = 1; //button pressed. CAUTION pull up
   oldButtonState = newButtonState;
   return buttonClicked;
 }
