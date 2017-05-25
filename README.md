@@ -5,7 +5,7 @@ Programs are based on XMASS projects by TadaMatz.
 
 * Arduino  
 	- mote
-	- XBee End-device
+	- XBee Router
 * Python
 	- Controller for XBee 
 	- XBee Coordinator
