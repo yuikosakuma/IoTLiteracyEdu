@@ -1,4 +1,4 @@
-#IoT Literacy Education
+# IoT Literacy Education
 This project intends to educate "IoT literacy" with Arduino, Processing, and Python.  
 Components are ...  
 Programs are based on XMASS projects by TadaMatz.
@@ -12,7 +12,7 @@ Programs are based on XMASS projects by TadaMatz.
 * Processing
 	- Visualizer
 
-##Preparation
+## Preparation
 PostgreSQL must be installed. (Installation guide in Japanese: [http://www.dbonline.jp/postgresinstall/](http://www.dbonline.jp/postgresinstall/))  
 PostgreSQL Server should be configurated  
 Following 2 tables must be configurated. Please refer to ```sql/setup.sql``` also.    
@@ -56,36 +56,36 @@ Use XBee-Arduino library as "XBee" [https://github.com/andrewrapp/xbee-arduino](
 
 version1 uses "dip switch array", version2 uses "volume" for application 
 
-###version1
-###data packet payload
+### version1
+### data packet payload
 UplinkHeader : 'U'  
 DownlinkHeader : 'D' 
 
-####Uplink : End device to Coodrinator
+#### Uplink : End device to Coodrinator
 Unicast to Coordinator  
 {UplinkHeader(1B,[0]), ID(1B,[1]), Temperature(4B,[2~5]), destinationID(1B,[6]), name(0 ~ 10B, [7~])} (7 ~ 17 bytes in total)  
 Temperature is multiplied by 10, in example, "25.3C" is sent like "0253". In the same way, "9.3C" is sent as "0093".
 
-####Downlink : Coordinator to End device
+#### Downlink : Coordinator to End device
 Broadcast  
 {DownlinkHeader(1B,[0]), votedCounter for ID:1(1B,[1]), voteCounter for ID:2(1B,[2]), ... , votedCounter of ID:20(1B,[20])} (21 bytes in total)  
 Ex. "0123456789:;<=>?@ABC"  
 value = (int)id + '0' (0x48)
 
-###version2
-###data packet payload
+### version2
+### data packet payload
 UplinkHeader : 'U'  
 DownlinkHeader : 'D'  
 LED\_INSTRUCTION : 'L'  
 SERVO\_INSTRUCTION : 'S'  
 
-####Uplink : End device to Coodrinator
+#### Uplink : End device to Coodrinator
 Unicast to Coordinator  
 {UplinkHeader(1B,[0]), ID(1B,[1]), Temperature(4B,[2~5]), volume(4B,[6~9]), name(0 ~ 10B, [10~])} (10 ~ 20 bytes in total)  
 Temperature is multiplied by 10, in example, "25.3C" is sent like "0253". In the same way, "9.3C" is sent as "0093".
 Volume is supposed to have the raw value of analogRead() of Arduino (0 ~ 1024)
 
-####Downlink : Coordinator to End device
+#### Downlink : Coordinator to End device
 Broadcast  
 value in flagtest table, 1 for LED, 2 for Servo  
 packet for LED controll:  

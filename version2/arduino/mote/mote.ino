@@ -4,9 +4,9 @@
 // Author: Tada Matz
 
 //<==== Please change according to an instruction
-String MOTENAME = "yourname"; //recommended to be between 1 ~ 10
-int MOTEID = 0; //should be from 1 ~ 20
-uint32_t DEST_ADDR_LSB = 0x40B0A672; // LSB of XBee Coordinator Address
+String MOTENAME = "hello"; //recommended to be between 1 ~ 10
+int MOTEID = 1; //should be from 1 ~ 20
+uint32_t DEST_ADDR_LSB = 0x415C081C; // LSB of XBee Coordinator Address
 //====>Please change according to an instruction
 
 #include "XBee.h"
