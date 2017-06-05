@@ -12,6 +12,12 @@ Programs are based on XMASS projects by TadaMatz.
 * Processing
 	- Visualizer
 
+## 作る手順
+
+1. Arduinoのノードを作り、スタンドアローンで試す
+2. XBeeの設定
+	PAN IDを整える, API enable = 2, XBeeのアドレスと
+
 ## Preparation
 PostgreSQL must be installed. (Installation guide in Japanese: [http://www.dbonline.jp/postgresinstall/](http://www.dbonline.jp/postgresinstall/))  
 PostgreSQL Server should be configurated  
