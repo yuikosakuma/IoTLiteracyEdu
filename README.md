@@ -16,7 +16,21 @@ Programs are based on XMASS projects by TadaMatz.
 
 1. Arduinoのノードを作り、スタンドアローンで試す
 2. XBeeの設定
-	PAN IDを整える, API enable = 2, XBeeのアドレスと
+	1. XBeeにテプラでIDを貼り、アドレスとの対応をメモっておく
+	2. X-CTUのインストール
+	3. X-CTUでFirmwareの設定(CoordinatorやRouter, PAN ID, API enable = 2)
+4. XBeeの通信テスト
+	1. 送信はArduinoプログラム（送信アドレスを合わせること）
+	2. 受信
+		1. X-CTUでやってみる
+		3. Pythonでやってみる（Serialライブラリを使う）
+3. Databaseの構築
+	1. PostgreSQL、pgAdminのインストール
+	2. テーブルを構築（flagtest, connectiontest）カラムもつくる
+3. PythonによるDatabase操作を試す
+4. センサデータを定期的にXBeeで送信し、Pythonで受信してDatabaseに蓄える
+5. ProcessingによるDatabase操作を試す
+6. ProcessingでDatabaseを読み、データを視覚化する
 
 ## Preparation
 PostgreSQL must be installed. (Installation guide in Japanese: [http://www.dbonline.jp/postgresinstall/](http://www.dbonline.jp/postgresinstall/))  
