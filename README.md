@@ -12,7 +12,7 @@ Programs are based on XMASS projects by TadaMatz.
 * Processing
 	- Visualizer
 
-## 作る手順
+## 勉強の手順
 
 1. Arduinoのノードを作り、スタンドアローンで試す
 2. XBeeの設定
