@@ -1,4 +1,4 @@
-# IoT Literacy Education
+ A# IoT Literacy Education
 This project intends to educate "IoT literacy" with Arduino, Processing, and Python.  
 Components are ...  
 Programs are based on XMASS projects by TadaMatz.
@@ -18,7 +18,7 @@ Programs are based on XMASS projects by TadaMatz.
 2. XBeeの設定
 	1. XBeeにテプラでIDを貼り、アドレスとの対応をメモっておく
 	2. X-CTUのインストール
-	3. X-CTUでFirmwareの設定(CoordinatorやRouter, PAN ID, API enable = 2)
+	3. X-CTUでFirmwareの設定(CoordinatorやRouter(APIで書き込む), PAN ID, API enable = 2)
 4. XBeeの通信テスト
 	1. 送信はArduinoプログラム（送信アドレスを合わせること）
 	2. 受信
