@@ -116,3 +116,5 @@ packet for LED controll:
 {DownlinkHeader(1B,[0]), SERVO\_INSTRUCTION(1B, [1]), Angle(3B, [2~4]} (5 bytes in total)  
 Ex. "DS104"  
 The value of angle should be from 0 ~ 179
+
+##勉強にあたり詰まったところ
