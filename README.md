@@ -59,7 +59,7 @@ Before:
 <property name="processing.classes"  
 	location="/Users/fjenett/Repos/processing/build/macosx/work/Processing.app/Contents/Resources/Java/" />
 After:
-<property name="processing.classes"  
+ <property name="processing.classes"  
 	location="/usr/local/lib/processing-3.2.1" /> 
 
 around #L18. adapt "location" the same place where the other libraries is in. 
@@ -118,8 +118,8 @@ packet for LED controll:
 Ex. "DS104"  
 The value of angle should be from 0 ~ 179
 
-##勉強にあたり詰まったところ
-###手順４
+## 勉強にあたり詰まったところ
+### 手順４
 - 受信用に設定したXBeeとArduino上の送信用に設定したXBeeの両方で通信する
 - pgadmin3はno longer supportedだそうなのでpgadmin4をダウンロード
 - コンパイル時のエラー
