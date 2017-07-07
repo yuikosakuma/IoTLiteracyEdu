@@ -47,6 +47,7 @@ SQL handling library for Processing needs Processing-2.2.1.
 Updated!!(2016/10/6): I found the way to use BezierSQLib in Processing-3.2.1.  
 I write down the way instruction to do it here.
 
+
 (It should work in other Linux, I guess. And also, once you have the new compiled library, you can just copy the library under "Processing/libraries" where other libraries in)  
 
 Step 1. Clone (or download ZIP) the repository from [https://github.com/fjenett/sql-library-processing](https://github.com/fjenett/sql-library-processing).  
@@ -116,3 +117,11 @@ packet for LED controll:
 {DownlinkHeader(1B,[0]), SERVO\_INSTRUCTION(1B, [1]), Angle(3B, [2~4]} (5 bytes in total)  
 Ex. "DS104"  
 The value of angle should be from 0 ~ 179
+
+##勉強にあたり詰まったところ
+###手順４
+- 受信用に設定したXBeeとArduino上の送信用に設定したXBeeの両方で通信する
+- pgadmin3はno longer supportedだそうなのでpgadmin4をダウンロード
+- コンパイル時のエラー
+　connectiontestの列volumeとlastupdateは存在しないので表に追加
+ 追加してみるとlastupdateの型timestamp without time zoneは選択できなかったので消してしまいました...
